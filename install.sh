@@ -81,14 +81,17 @@ declare -a CATALOGUE=(
   "debrief-agent|Agent — Bilan candidat points forts/faibles|agent|.claude/agents/rh/debrief-agent.md"
   # ── Brain Builder ──────────────────────────
   "brain-builder|Skill — Vault Obsidian / mémoire projet structurée|skill|.claude/skills/brain-builder/SKILL.md"
+  # ── Skill Optimizer ────────────────────────
+  "skill-optimizer|Skill — Optimisation d'un SKILL.md par micro-éditions validées (SkillOpt)|skill|.claude/skills/skill-optimizer/SKILL.md"
 )
 
 # ── Bundles prédéfinis ────────────────────────
 declare -A BUNDLES
-BUNDLES["tout"]="rh-pipeline cv-analyst cv-designer cv-recruiter rh-interviewer tech-interviewer debrief-agent brain-builder"
+BUNDLES["tout"]="rh-pipeline cv-analyst cv-designer cv-recruiter rh-interviewer tech-interviewer debrief-agent brain-builder skill-optimizer"
 BUNDLES["rh"]="rh-pipeline cv-analyst cv-designer cv-recruiter rh-interviewer tech-interviewer debrief-agent"
 BUNDLES["cv-only"]="cv-analyst cv-designer cv-recruiter"
 BUNDLES["brain"]="brain-builder"
+BUNDLES["optimizer"]="skill-optimizer"
 
 # ── Sélection interactive ─────────────────────
 show_catalogue() {
@@ -108,6 +111,7 @@ show_bundles() {
   echo -e "  ${BOLD}[1]${RESET} rh      — Pipeline RH complet (skill + 6 agents)"
   echo -e "  ${BOLD}[2]${RESET} cv-only — Agents CV uniquement (analyst + designer + recruiter)"
   echo -e "  ${BOLD}[3]${RESET} brain   — Brain Builder (vault Obsidian / mémoire projet)"
+  echo -e "  ${BOLD}[4]${RESET} optimizer — Skill Optimizer (itération sur un SKILL.md)"
   echo ""
   echo -n "Choix : "
 }
@@ -152,6 +156,7 @@ get_ids_from_selection() {
       1) bundle_key="rh" ;;
       2) bundle_key="cv-only" ;;
       3) bundle_key="brain" ;;
+      4) bundle_key="optimizer" ;;
       *) print_error "Bundle invalide."; exit 1 ;;
     esac
     read -ra selected_ids <<< "${BUNDLES[$bundle_key]}"
