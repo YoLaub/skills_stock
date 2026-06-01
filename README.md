@@ -76,7 +76,7 @@ Pour rester synchronisé avec les mises à jour du dépôt :
 
 ```bash
 cd mon-projet
-git submodule add https://github.com/YoLaub/skills-agents.git .claude/registry
+git submodule add https://github.com/YoLaub/skills_stock.git .claude/registry
 ```
 
 Puis créer des symlinks vers les fichiers souhaités :
@@ -97,7 +97,7 @@ git submodule update --remote
 Pour installer rapidement un ensemble d'agents sans cloner le dépôt :
 
 ```bash
-BASE="https://raw.githubusercontent.com/YoLaub/skills-agents/main"
+BASE="https://raw.githubusercontent.com/YoLaub/skills_stock/main"
 mkdir -p .claude/agents .claude/skills/nom-pipeline
 
 curl -s "$BASE/agents/[domaine]/nom-agent.md" -o .claude/agents/nom-agent.md

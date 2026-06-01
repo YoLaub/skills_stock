@@ -8,8 +8,17 @@
 
 set -e
 
-REPO_RAW="https://raw.githubusercontent.com/YoLaub/skills-agents/main"
+REPO_OWNER="YoLaub"
+REPO_NAME="skills_stock"
+REPO_BRANCH="main"
+REPO_RAW="https://raw.githubusercontent.com/$REPO_OWNER/$REPO_NAME/$REPO_BRANCH"
+GH_API="https://api.github.com/repos/$REPO_OWNER/$REPO_NAME"
 TARGET=".claude"
+
+# Compteurs globaux (incrémentés par download_file)
+INSTALLED=0
+SKIPPED=0
+REPO_TREE=""  # cache du listing récursif de l'API GitHub
 
 # ── Couleurs ──────────────────────────────────
 RESET="\033[0m"
@@ -176,35 +185,97 @@ get_ids_from_selection() {
   echo "${selected_ids[@]}"
 }
 
+# Extrait les chemins des blobs (fichiers) depuis le JSON de l'API git/trees (sur stdin).
+# Privilégie jq, puis python3/python, et retombe sur awk (utile sous Git-Bash/Windows).
+list_blobs() {
+  if command -v jq &>/dev/null; then
+    jq -r '.tree[] | select(.type=="blob") | .path'
+  elif command -v python3 &>/dev/null; then
+    python3 -c 'import sys,json; [print(e["path"]) for e in json.load(sys.stdin).get("tree",[]) if e.get("type")=="blob"]'
+  elif command -v python &>/dev/null; then
+    python -c 'import sys,json
+for e in json.load(sys.stdin).get("tree",[]):
+    if e.get("type")=="blob": print(e["path"])'
+  else
+    # Fallback (Git-Bash/Windows sans jq ni python) : RS="{" isole chaque entrée,
+    # ce qui fonctionne que le JSON soit compact (une ligne) ou indenté.
+    awk 'BEGIN{RS="{"} /"type": *"blob"/ {
+      if (match($0, /"path": *"[^"]*"/)) {
+        s=substr($0,RSTART,RLENGTH); sub(/"path": *"/,"",s); sub(/"$/,"",s); print s
+      }
+    }'
+  fi
+}
+
+# Récupère (et met en cache) l'arborescence récursive complète du dépôt en un seul appel API.
+fetch_repo_tree() {
+  if [[ -z "$REPO_TREE" ]]; then
+    REPO_TREE=$(curl -sf \
+      -H "Accept: application/vnd.github+json" \
+      -H "User-Agent: skills-installer" \
+      "$GH_API/git/trees/$REPO_BRANCH?recursive=1") || return 1
+  fi
+  printf '%s' "$REPO_TREE"
+}
+
+# Télécharge un fichier distant (chemin repo) vers un chemin local, avec feedback + comptage.
+download_file() {
+  local remote_path="$1"
+  local local_path="$2"
+
+  mkdir -p "$(dirname "$local_path")"
+
+  if [[ -f "$local_path" ]]; then
+    echo -n -e "  ${DIM}(maj)${RESET} $local_path ... "
+  else
+    echo -n "  $local_path ... "
+  fi
+
+  if curl -sf "$REPO_RAW/$remote_path" -o "$local_path" 2>/dev/null; then
+    echo -e "${GREEN}✓${RESET}"
+    INSTALLED=$((INSTALLED + 1))
+  else
+    echo -e "${RED}✗ échec${RESET}"
+    SKIPPED=$((SKIPPED + 1))
+  fi
+}
+
 install_ids() {
   local ids=("$@")
+  INSTALLED=0
+  SKIPPED=0
 
-  # Résoudre les fichiers à télécharger depuis les ids
-  declare -A to_download  # chemin_distant -> chemin_local
+  local agent_files=()  # fichiers agents (téléchargés tels quels, sous-dossier aplati)
+  local skill_dirs=()   # préfixes de dossiers skills (dossier complet via API)
 
   for id in "${ids[@]}"; do
     for entry in "${CATALOGUE[@]}"; do
       IFS='|' read -r eid _ etype efiles <<< "$entry"
-      if [[ "$eid" == "$id" ]]; then
-        IFS=',' read -ra files <<< "$efiles"
-        for f in "${files[@]}"; do
-          # Déterminer le chemin local dans .claude/
-          if [[ "$f" == .claude/agents/* ]]; then
-            # .claude/agents/rh/cv-analyst.md → .claude/agents/cv-analyst.md (aplatir le sous-dossier)
-            local filename
-            filename=$(basename "$f")
-            to_download["$f"]="$TARGET/agents/$filename"
-          elif [[ "$f" == .claude/skills/* ]]; then
-            # .claude/skills/rh-pipeline/SKILL.md → .claude/skills/rh-pipeline/SKILL.md
-            local rel="${f#.claude/skills/}"
-            to_download["$f"]="$TARGET/skills/$rel"
-          fi
-        done
-      fi
+      [[ "$eid" != "$id" ]] && continue
+      IFS=',' read -ra files <<< "$efiles"
+      for f in "${files[@]}"; do
+        if [[ "$f" == .claude/agents/* ]]; then
+          agent_files+=("$f")
+        elif [[ "$f" == .claude/skills/* ]]; then
+          # .claude/skills/<nom>/... → préfixe .claude/skills/<nom>
+          local rest="${f#.claude/skills/}"
+          skill_dirs+=(".claude/skills/${rest%%/*}")
+        fi
+      done
     done
   done
 
-  if [[ ${#to_download[@]} -eq 0 ]]; then
+  # Dédoublonner les dossiers de skills
+  local uniq_dirs=()
+  local d u seen
+  for d in "${skill_dirs[@]}"; do
+    seen=0
+    for u in "${uniq_dirs[@]}"; do [[ "$u" == "$d" ]] && seen=1 && break; done
+    [[ $seen -eq 0 ]] && uniq_dirs+=("$d")
+  done
+  skill_dirs=("${uniq_dirs[@]}")
+
+  if [[ ${#agent_files[@]} -eq 0 && ${#skill_dirs[@]} -eq 0 ]]; then
     print_warn "Rien à installer."
     return
   fi
@@ -213,36 +284,43 @@ install_ids() {
   print_step "Installation dans $TARGET/"
   echo ""
 
-  local installed=0
-  local skipped=0
-
-  for remote_path in "${!to_download[@]}"; do
-    local local_path="${to_download[$remote_path]}"
-    local local_dir
-    local_dir=$(dirname "$local_path")
-
-    mkdir -p "$local_dir"
-
-    if [[ -f "$local_path" ]]; then
-      echo -n -e "  ${DIM}(existe déjà, mise à jour)${RESET} $local_path ... "
-    else
-      echo -n "  $local_path ... "
-    fi
-
-    if curl -sf "$REPO_RAW/$remote_path" -o "$local_path" 2>/dev/null; then
-      echo -e "${GREEN}✓${RESET}"
-      ((installed++))
-    else
-      echo -e "${RED}✗ échec (fichier introuvable sur le dépôt)${RESET}"
-      ((skipped++))
-    fi
+  # ── Agents : fichier unique, sous-dossier de domaine aplati ──
+  local f
+  for f in "${agent_files[@]}"; do
+    download_file "$f" "$TARGET/agents/$(basename "$f")"
   done
+
+  # ── Skills : dossier complet via parcours récursif de l'API GitHub ──
+  if [[ ${#skill_dirs[@]} -gt 0 ]]; then
+    local tree all_blobs
+    tree=$(fetch_repo_tree)
+    if [[ -z "$tree" ]]; then
+      print_error "Impossible de récupérer l'arborescence du dépôt via l'API GitHub."
+      print_warn "Vérifie ta connexion, ou la limite de l'API (60 req/h sans token)."
+    else
+      # tr -d '\r' : certains python/awk sous Windows émettent des fins de ligne CRLF.
+      all_blobs=$(printf '%s' "$tree" | list_blobs | tr -d '\r')
+      local dir blob rel found
+      for dir in "${skill_dirs[@]}"; do
+        found=0
+        while IFS= read -r blob; do
+          [[ -z "$blob" ]] && continue
+          [[ "$blob" == "$dir/"* ]] || continue
+          found=1
+          # .claude/skills/<nom>/... → $TARGET/skills/<nom>/...
+          rel="${blob#.claude/skills/}"
+          download_file "$blob" "$TARGET/skills/$rel"
+        done <<< "$all_blobs"
+        [[ $found -eq 0 ]] && print_warn "Aucun fichier trouvé pour $dir sur $REPO_BRANCH."
+      done
+    fi
+  fi
 
   echo ""
   print_divider
-  echo -e "${GREEN}${BOLD}$installed fichier(s) installé(s)${RESET}"
-  if [[ $skipped -gt 0 ]]; then
-    print_warn "$skipped fichier(s) non récupéré(s)"
+  echo -e "${GREEN}${BOLD}$INSTALLED fichier(s) installé(s)${RESET}"
+  if [[ $SKIPPED -gt 0 ]]; then
+    print_warn "$SKIPPED fichier(s) non récupéré(s)"
   fi
 }
 

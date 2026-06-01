@@ -59,17 +59,50 @@ Exemples d'inspirations par style :
   emerald #2D6A4F, bordeaux #7B2D3E, slate #334155, amber #B45309
 - Éviter : violet/mauve, dégradés flashy, bleu corporate générique #0066CC
 
-### 4. Contrôle de densité
-- Espacements cohérents via variables CSS (--space-xs à --space-xl)
-- Chaque section respire — pas de blocs compressés
-- Si le contenu dépasse une page A4 : réduire font-size body à 11px,
-  ajuster les paddings, jamais rogner le contenu
+### 4. Contrôle de densité et remplissage vertical
+
+**Règle absolue : le CV doit occuper 100% de la hauteur A4. Aucun espace blanc
+en bas de page n'est acceptable.**
+
+Stratégie selon le layout :
+
+**Layout sidebar + main (moderne, creatif)**
+- La sidebar ET le main doivent être `height: 100%` ou `min-height: var(--page-height)`
+- Utiliser `display: flex; flex-direction: column; justify-content: space-between`
+  sur la sidebar pour distribuer les blocs sur toute la hauteur
+- Sur le main : `display: flex; flex-direction: column` avec `flex-grow: 1`
+  sur la section expériences (la plus longue) pour qu'elle absorbe l'espace restant
+
+**Layout une colonne (minimaliste, corporate)**
+- Utiliser `display: flex; flex-direction: column; justify-content: space-between`
+  sur `.cv-page` directement
+- Augmenter le `gap` entre sections jusqu'à remplir la page
+
+**Calibration des espacements**
+- Ne jamais utiliser de valeurs fixes en `px` pour les gaps entre sections
+- Utiliser `flex-grow: 1` sur la dernière section ou un spacer `<div style="flex:1">`
+- Si le contenu est court : augmenter `line-height` (1.7-1.8), padding des items,
+  et `letter-spacing` légèrement — jamais laisser un blanc brut
+- Si le contenu dépasse : réduire `font-size` body de 1px à la fois (min 9px),
+  puis les paddings internes, jamais rogner le contenu
+
+**Variables CSS obligatoires**
+```css
+:root {
+  --space-xs: 3px;
+  --space-sm: 6px;
+  --space-md: 10px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+}
+```
+Espacements cohérents via ces variables uniquement — aucune valeur magique en dur.
 
 ---
 
 ## Contrainte A4 — NON NÉGOCIABLE
 
-Le CV **doit tenir sur exactement une page A4** imprimable.
+Le CV **doit occuper exactement une page A4** : ni débordement, ni espace blanc.
 
 ### CSS obligatoire
 
@@ -78,50 +111,70 @@ Le CV **doit tenir sur exactement une page A4** imprimable.
 :root {
   --page-width: 210mm;
   --page-height: 297mm;
-  --margin-h: 14mm;
-  --margin-v: 12mm;
+  --margin-h: 13mm;
+  --margin-v: 11mm;
 }
 
 body {
   margin: 0;
-  padding: 0;
-  background: #e5e5e5; /* fond neutre pour le preview */
+  padding: 20px;
+  background: #cbd5e1;
   display: flex;
   justify-content: center;
-  padding: 20px;
+  font-family: var(--f-body);
 }
 
+/* La page occupe EXACTEMENT le A4 — flex pour distribution verticale */
 .cv-page {
   width: var(--page-width);
-  min-height: var(--page-height);
+  height: var(--page-height);       /* height fixe, pas min-height */
   max-height: var(--page-height);
-  padding: var(--margin-v) var(--margin-h);
   background: white;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
-  overflow: hidden; /* jamais de débordement */
-  position: relative;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.22);
+  overflow: hidden;
+  display: flex;                     /* flex row pour sidebar + main */
+  flex-direction: row;
   box-sizing: border-box;
+}
+
+/* Sidebar : flex column, space-between pour remplir la hauteur */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;   /* distribue les blocs sur 297mm */
+  height: var(--page-height);
+  padding: var(--margin-v) 9mm var(--margin-v) var(--margin-h);
+  box-sizing: border-box;
+}
+
+/* Main : flex column, section principale en flex-grow */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: var(--page-height);
+  padding: var(--margin-v) var(--margin-h) var(--margin-v) 10mm;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* La section expériences absorbe tout l'espace disponible */
+.section-experiences {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Règles d'impression — priorité maximale */
 @media print {
-  body {
-    background: none;
-    padding: 0;
-  }
+  body { background: none; padding: 0; }
   .cv-page {
     width: 210mm;
     height: 297mm;
-    max-height: 297mm;
     box-shadow: none;
-    padding: var(--margin-v) var(--margin-h);
-    page-break-after: avoid;
-    overflow: hidden;
   }
-  @page {
-    size: A4;
-    margin: 0;
-  }
+  @page { size: A4; margin: 0; }
+  .print-btn { display: none; }
 }
 ```
 
@@ -181,31 +234,32 @@ Inclure un bouton flottant hors de la zone `.cv-page` :
 
 ### Layouts par style
 
-**moderne** : sidebar gauche 30% (infos contact, compétences, langues)
-+ zone droite 70% (résumé, expériences, formation)
+**moderne** : sidebar gauche fixe 68mm (`height: 297mm`, `justify-content: space-between`)
++ main droite flex-grow 1 (`display: flex; flex-direction: column`)
 
-**minimaliste** : layout une colonne, tout aligné à gauche, séparateurs
-par espacement uniquement
+**minimaliste** : une colonne, `.cv-page` en `flex-direction: column; justify-content: space-between`,
+sections avec `gap` calculé pour remplir
 
-**creatif** : header pleine largeur avec fond coloré + corps en 2 colonnes
-asymétriques (40/60)
+**creatif** : header pleine largeur fond coloré (hauteur fixe) + corps en 2 colonnes
+asymétriques (40/60), chaque colonne en `display: flex; flex-direction: column`
 
-**corporate** : layout une colonne classique, header sobre, sections
-séparées par filets fins
+**corporate** : une colonne, sections séparées par filets fins,
+`flex-grow: 1` sur la section expériences
 
 ---
 
 ## Checklist avant de livrer
 
-- [ ] Le fichier s'ouvre dans un navigateur et affiche le CV sur fond gris
-- [ ] Le CV tient sur exactement une page A4 visible (297mm de hauteur)
+- [ ] Le CV remplit visuellement les 297mm — aucun espace blanc en bas
+- [ ] La sidebar et le main ont la même hauteur (297mm)
+- [ ] `justify-content: space-between` ou `flex-grow` utilisé pour la distribution verticale
 - [ ] Le bouton "Imprimer / Exporter PDF" est visible en haut à droite
-- [ ] `window.print()` déclenche un PDF d'une page propre sans fond gris
-- [ ] Les Google Fonts chargent (vérifier les imports)
-- [ ] Aucun texte ne déborde de la zone `.cv-page`
+- [ ] `window.print()` génère un PDF d'une page propre sans fond gris
+- [ ] Les Google Fonts chargent correctement
+- [ ] Aucun texte ne déborde de `.cv-page` (`overflow: hidden`)
 - [ ] La typographie choisie n'est PAS Inter, Roboto, Arial, ou Lato
 - [ ] La couleur d'accent n'est PAS un dégradé violet générique
-- [ ] Chaque section du CV est présente et lisible
+- [ ] Toutes les sections du CV sont présentes et lisibles
 
 ---
 
