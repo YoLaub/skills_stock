@@ -8,12 +8,48 @@ Un **skill** décrit un pipeline ou un processus complexe. Un **agent** est un s
 
 ## Table des matières
 
+- [Catalogue](#catalogue)
 - [Concepts](#concepts)
 - [Structure du dépôt](#structure-du-dépôt)
 - [Installation](#installation)
 - [Intégration dans un projet](#intégration-dans-un-projet)
 - [Personnalisation](#personnalisation)
 - [Créer ses propres skills et agents](#créer-ses-propres-skills-et-agents)
+
+---
+
+## Catalogue
+
+### Skills
+
+| Skill | Description |
+|-------|-------------|
+| `rh-pipeline` | Pipeline RH complet multi-agents pour traiter une candidature de A à Z — analyse CV, mise en forme, email recruteur, entretiens, bilan final. |
+| `cert-pipeline` | Pipeline de préparation à une certification ou titre professionnel — chargement référentiel, analyse des écarts, fiches de révision, simulation jury, bilan. |
+| `brain-builder` | Crée et maintient des "cerveaux projets" sous forme de vaults Obsidian structurés (architecture 3 couches : raw / wiki / reports), inspirés de l'approche LLM Wiki. |
+| `skill-optimizer` | Optimise un SKILL.md existant par micro-éditions validées (approche SkillOpt) : baseline → proposition → évaluation → commit ou revert. |
+
+### Agents — Pipeline RH
+
+| Agent | Description |
+|-------|-------------|
+| `cv-analyst` | Analyse un CV brut pour évaluer sa compatibilité ATS, identifier les mots-clés manquants et produire une version améliorée. |
+| `cv-designer` | Génère un fichier HTML visuellement original format A4, prêt à imprimer ou exporter en PDF depuis le navigateur. |
+| `cv-recruiter` | Rédige l'email de candidature professionnel et génère le rapport de soumission ATS final. |
+| `rh-interviewer` | Simule un entretien de motivation en mode conversationnel — pose les questions, évalue les réponses, enchaîne. |
+| `tech-interviewer` | Simule un entretien technique adapté au profil et à la stack — adapte le niveau et les thèmes détectés dans le CV. |
+| `debrief-agent` | Synthétise toutes les étapes du pipeline RH en un bilan complet avec note, recommandation, points forts et axes d'amélioration. |
+
+### Agents — Pipeline Certification
+
+| Agent | Description |
+|-------|-------------|
+| `cert-intake` | Collecte le nom de la certification visée, le profil du candidat et un compte rendu d'année synthétique (500 mots max). |
+| `referentiel-loader` | Charge et résume le référentiel officiel depuis `docs/` ou via recherche web — produit un résumé structuré de 600 mots max. |
+| `gap-analyser` | Croise le profil candidat avec les compétences du référentiel et produit une carte des écarts (maîtrisées / partielles / manquantes). |
+| `exam-preparer` | Génère des fiches de révision ciblées et une banque de questions probables basées sur les écarts identifiés. |
+| `cert-interviewer` | Simule un entretien jury en mode conversationnel, adapté au référentiel et aux lacunes détectées. |
+| `cert-debrief` | Synthétise le pipeline certification en un bilan complet avec points forts, axes à consolider et probabilité estimée de validation. |
 
 ---
 
