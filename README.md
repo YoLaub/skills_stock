@@ -35,14 +35,30 @@ Claude Code lit automatiquement tous les fichiers présents dans `.claude/agents
 ```
 .
 ├── agents/
-│   ├── [domaine]/
-│   │   ├── nom-agent.md
-│   │   └── ...
-│   └── ...
+│   ├── rh/                          ← Pipeline RH (6 agents)
+│   │   ├── cv-analyst.md
+│   │   ├── cv-designer.md
+│   │   ├── cv-recruiter.md
+│   │   ├── rh-interviewer.md
+│   │   ├── tech-interviewer.md
+│   │   └── debrief-agent.md
+│   ├── cert/                        ← Pipeline Certification (6 agents)
+│   │   ├── cert-intake.md
+│   │   ├── referentiel-loader.md
+│   │   ├── gap-analyser.md
+│   │   ├── exam-preparer.md
+│   │   ├── cert-interviewer.md
+│   │   └── cert-debrief.md
+│   └── [domaine]/                   ← futur domaine
 ├── skills/
-│   ├── [nom-pipeline]/
+│   ├── rh-pipeline/
 │   │   └── SKILL.md
-│   └── ...
+│   ├── cert-pipeline/
+│   │   └── SKILL.md
+│   ├── brain-builder/
+│   │   └── SKILL.md
+│   └── skill-optimizer/
+│       └── SKILL.md
 └── README.md
 ```
 
