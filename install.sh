@@ -197,20 +197,30 @@ get_ids_from_selection() {
 }
 
 # Extrait les chemins des blobs (fichiers) depuis le JSON de l'API git/trees (sur stdin).
-# Privilégie jq, puis python3/python, et retombe sur awk (utile sous Git-Bash/Windows).
+# Ordre : jq → PowerShell (Windows/MSYS) → python3 réel → awk.
 list_blobs() {
+  local json
+  json=$(cat)  # lire stdin une seule fois
+
   if command -v jq &>/dev/null; then
-    jq -r '.tree[] | select(.type=="blob") | .path'
-  elif command -v python3 &>/dev/null; then
-    python3 -c 'import sys,json; [print(e["path"]) for e in json.load(sys.stdin).get("tree",[]) if e.get("type")=="blob"]'
-  elif command -v python &>/dev/null; then
-    python -c 'import sys,json
+    printf '%s' "$json" | jq -r '.tree[] | select(.type=="blob") | .path'
+
+  elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" || -n "$WINDIR" ]] && command -v powershell.exe &>/dev/null; then
+    # Windows/Git-Bash : PowerShell natif, Python peut être le Store redirect
+    printf '%s' "$json" | powershell.exe -NoProfile -NonInteractive -Command \
+      '$in=[Console]::In.ReadToEnd(); ($in|ConvertFrom-Json).tree | Where-Object{$_.type -eq "blob"} | ForEach-Object{$_.path}'
+
+  elif python3 -c "" 2>/dev/null; then
+    printf '%s' "$json" | python3 -c 'import sys,json; [print(e["path"]) for e in json.load(sys.stdin).get("tree",[]) if e.get("type")=="blob"]'
+
+  elif python -c "" 2>/dev/null; then
+    printf '%s' "$json" | python -c 'import sys,json
 for e in json.load(sys.stdin).get("tree",[]):
     if e.get("type")=="blob": print(e["path"])'
+
   else
-    # Fallback (Git-Bash/Windows sans jq ni python) : RS="{" isole chaque entrée,
-    # ce qui fonctionne que le JSON soit compact (une ligne) ou indenté.
-    awk 'BEGIN{RS="{"} /"type": *"blob"/ {
+    # Dernier recours : awk (JSON compact ou indenté)
+    printf '%s' "$json" | awk 'BEGIN{RS="{"} /"type": *"blob"/ {
       if (match($0, /"path": *"[^"]*"/)) {
         s=substr($0,RSTART,RLENGTH); sub(/"path": *"/,"",s); sub(/"$/,"",s); print s
       }
