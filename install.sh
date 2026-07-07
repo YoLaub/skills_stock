@@ -102,6 +102,8 @@ declare -a CATALOGUE=(
   "skill-optimizer|Skill — Optimisation d'un SKILL.md par micro-éditions validées (SkillOpt)|skill|.claude/skills/skill-optimizer/SKILL.md"
   # ── Greenfield TDD + OKF ───────────────────
   "greenfield-tdd-okf|Skill — Workflow greenfield TDD + index OKF (démarrage nouveau projet)|skill|.claude/skills/greenfield-tdd-okf/SKILL.md"
+  # ── Presentation Builder ───────────────────
+  "presentation-builder|Skill — Construit une présentation (Marp, .pptx/PDF) avec modèle assertion-preuve et porte de contrôle visuelle|skill|.claude/skills/presentation-builder/SKILL.md"
 )
 
 # ── Bundles prédéfinis ────────────────────────
@@ -113,6 +115,7 @@ BUNDLES["cert"]="cert-pipeline cert-intake referentiel-loader gap-analyser exam-
 BUNDLES["brain"]="brain-builder"
 BUNDLES["optimizer"]="skill-optimizer"
 BUNDLES["greenfield"]="greenfield-tdd-okf"
+BUNDLES["presentation"]="presentation-builder"
 
 # ── Sélection interactive ─────────────────────
 show_catalogue() {
@@ -135,6 +138,7 @@ show_bundles() {
   echo -e "  ${BOLD}[4]${RESET} brain   — Brain Builder (vault Obsidian / mémoire projet)"
   echo -e "  ${BOLD}[5]${RESET} optimizer — Skill Optimizer (itération sur un SKILL.md)"
   echo -e "  ${BOLD}[6]${RESET} greenfield — Greenfield TDD + OKF (démarrage nouveau projet)"
+  echo -e "  ${BOLD}[7]${RESET} presentation — Presentation Builder (slides Marp/pptx/PDF)"
   echo ""
   echo -n "Choix : "
 }
@@ -182,6 +186,7 @@ get_ids_from_selection() {
       4) bundle_key="brain" ;;
       5) bundle_key="optimizer" ;;
       6) bundle_key="greenfield" ;;
+      7) bundle_key="presentation" ;;
       *) print_error "Bundle invalide."; exit 1 ;;
     esac
     read -ra selected_ids <<< "${BUNDLES[$bundle_key]}"

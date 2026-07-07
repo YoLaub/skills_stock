@@ -29,6 +29,7 @@ Un **skill** décrit un pipeline ou un processus complexe. Un **agent** est un s
 | `brain-builder` | Crée et maintient des "cerveaux projets" sous forme de vaults Obsidian structurés (architecture 3 couches : raw / wiki / reports), inspirés de l'approche LLM Wiki. |
 | `skill-optimizer` | Optimise un SKILL.md existant par micro-éditions validées (approche SkillOpt) : baseline → proposition → évaluation → commit ou revert. |
 | `greenfield-tdd-okf` | Workflow répétable pour démarrer un projet greenfield en TDD avec index OKF : cadrage, plan validé, bootstrap monorepo git-flow, features en branches avec tests + E2E avant merge, rétro continue. |
+| `presentation-builder` | Construit une présentation orale (soutenance, pitch, talk, démo) avec modèle assertion-preuve et design system fermé — export Marp en .pptx/PDF, schémas Mermaid et graphiques automatiques, porte de contrôle visuelle avant livraison. |
 
 ### Agents — Pipeline RH
 
@@ -96,8 +97,12 @@ Claude Code lit automatiquement tous les fichiers présents dans `.claude/agents
 │   │   └── SKILL.md
 │   ├── skill-optimizer/
 │   │   └── SKILL.md
-│   └── greenfield-tdd-okf/
-│       └── SKILL.md
+│   ├── greenfield-tdd-okf/
+│   │   └── SKILL.md
+│   └── presentation-builder/
+│       ├── SKILL.md
+│       ├── design-system/
+│       └── references/
 └── README.md
 ```
 
