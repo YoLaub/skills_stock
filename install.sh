@@ -100,6 +100,8 @@ declare -a CATALOGUE=(
   "brain-builder|Skill — Vault Obsidian / mémoire projet structurée|skill|.claude/skills/brain-builder/SKILL.md"
   # ── Skill Optimizer ────────────────────────
   "skill-optimizer|Skill — Optimisation d'un SKILL.md par micro-éditions validées (SkillOpt)|skill|.claude/skills/skill-optimizer/SKILL.md"
+  # ── Greenfield TDD + OKF ───────────────────
+  "greenfield-tdd-okf|Skill — Workflow greenfield TDD + index OKF (démarrage nouveau projet)|skill|.claude/skills/greenfield-tdd-okf/SKILL.md"
 )
 
 # ── Bundles prédéfinis ────────────────────────
@@ -110,6 +112,7 @@ BUNDLES["cv-only"]="cv-analyst cv-designer cv-recruiter"
 BUNDLES["cert"]="cert-pipeline cert-intake referentiel-loader gap-analyser exam-preparer cert-interviewer cert-debrief"
 BUNDLES["brain"]="brain-builder"
 BUNDLES["optimizer"]="skill-optimizer"
+BUNDLES["greenfield"]="greenfield-tdd-okf"
 
 # ── Sélection interactive ─────────────────────
 show_catalogue() {
@@ -131,6 +134,7 @@ show_bundles() {
   echo -e "  ${BOLD}[3]${RESET} cert    — Pipeline Certification complet (skill + 6 agents)"
   echo -e "  ${BOLD}[4]${RESET} brain   — Brain Builder (vault Obsidian / mémoire projet)"
   echo -e "  ${BOLD}[5]${RESET} optimizer — Skill Optimizer (itération sur un SKILL.md)"
+  echo -e "  ${BOLD}[6]${RESET} greenfield — Greenfield TDD + OKF (démarrage nouveau projet)"
   echo ""
   echo -n "Choix : "
 }
@@ -177,6 +181,7 @@ get_ids_from_selection() {
       3) bundle_key="cert" ;;
       4) bundle_key="brain" ;;
       5) bundle_key="optimizer" ;;
+      6) bundle_key="greenfield" ;;
       *) print_error "Bundle invalide."; exit 1 ;;
     esac
     read -ra selected_ids <<< "${BUNDLES[$bundle_key]}"
