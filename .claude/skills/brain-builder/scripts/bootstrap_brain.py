@@ -11,9 +11,8 @@ Usage:
         --description "Backend Strapi v5 + Turborepo frontend" \\
         --stack "strapi,nextjs,postgres"
 
-Les templates sont embarqués dans ce script pour qu'il soit autonome.
-Si le dossier assets/templates/ du skill est disponible à côté, le script
-peut les utiliser en priorité (voir --templates-dir).
+Les templates (y compris la config .obsidian/) sont embarqués dans ce script
+pour qu'il soit autonome.
 """
 
 import argparse
