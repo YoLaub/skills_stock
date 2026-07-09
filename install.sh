@@ -104,6 +104,8 @@ declare -a CATALOGUE=(
   "greenfield-tdd-okf|Skill — Workflow greenfield TDD + index OKF (démarrage nouveau projet)|skill|.claude/skills/greenfield-tdd-okf/SKILL.md"
   # ── Presentation Builder ───────────────────
   "presentation-builder|Skill — Construit une présentation (Marp, .pptx/PDF) avec modèle assertion-preuve et porte de contrôle visuelle|skill|.claude/skills/presentation-builder/SKILL.md"
+  # ── Skill Architect ────────────────────────
+  "skill-architect|Skill — Architecture et refactor structurel de skills (SOLID transposé, patterns, checklist)|skill|.claude/skills/skill-architect/SKILL.md"
 )
 
 # ── Bundles prédéfinis ────────────────────────
@@ -116,6 +118,7 @@ BUNDLES["brain"]="brain-builder"
 BUNDLES["optimizer"]="skill-optimizer"
 BUNDLES["greenfield"]="greenfield-tdd-okf"
 BUNDLES["presentation"]="presentation-builder"
+BUNDLES["architect"]="skill-architect"
 
 # ── Sélection interactive ─────────────────────
 show_catalogue() {
@@ -139,6 +142,7 @@ show_bundles() {
   echo -e "  ${BOLD}[5]${RESET} optimizer — Skill Optimizer (itération sur un SKILL.md)"
   echo -e "  ${BOLD}[6]${RESET} greenfield — Greenfield TDD + OKF (démarrage nouveau projet)"
   echo -e "  ${BOLD}[7]${RESET} presentation — Presentation Builder (slides Marp/pptx/PDF)"
+  echo -e "  ${BOLD}[8]${RESET} architect — Skill Architect (conception/refactor de skills)"
   echo ""
   echo -n "Choix : "
 }
@@ -187,6 +191,7 @@ get_ids_from_selection() {
       5) bundle_key="optimizer" ;;
       6) bundle_key="greenfield" ;;
       7) bundle_key="presentation" ;;
+      8) bundle_key="architect" ;;
       *) print_error "Bundle invalide."; exit 1 ;;
     esac
     read -ra selected_ids <<< "${BUNDLES[$bundle_key]}"

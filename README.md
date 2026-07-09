@@ -30,6 +30,7 @@ Un **skill** décrit un pipeline ou un processus complexe. Un **agent** est un s
 | `skill-optimizer` | Optimise un SKILL.md existant par micro-éditions validées (approche SkillOpt) : baseline → proposition → évaluation → commit ou revert. |
 | `greenfield-tdd-okf` | Workflow répétable pour démarrer un projet greenfield en TDD avec index OKF : cadrage, plan validé, bootstrap monorepo git-flow, features en branches avec tests + E2E avant merge, rétro continue. |
 | `presentation-builder` | Construit une présentation orale (soutenance, pitch, talk, démo) avec modèle assertion-preuve et design system fermé — export Marp en .pptx/PDF, schémas Mermaid et graphiques automatiques, porte de contrôle visuelle avant livraison. |
+| `skill-architect` | Conçoit l'architecture d'un nouveau skill ou refactore la structure d'un skill existant — SOLID transposé aux skills, patterns (Template Method, Facade, Pipeline, Strategy), découpage par vitesse de changement, checklist de revue. |
 
 ### Agents — Pipeline RH
 
@@ -94,15 +95,20 @@ Claude Code lit automatiquement tous les fichiers présents dans `.claude/agents
 │   ├── cert-pipeline/
 │   │   └── SKILL.md
 │   ├── brain-builder/
-│   │   └── SKILL.md
+│   │   ├── SKILL.md
+│   │   ├── references/
+│   │   └── scripts/
 │   ├── skill-optimizer/
 │   │   └── SKILL.md
 │   ├── greenfield-tdd-okf/
 │   │   ├── SKILL.md
 │   │   └── references/
-│   └── presentation-builder/
+│   ├── presentation-builder/
+│   │   ├── SKILL.md
+│   │   ├── design-system/
+│   │   └── references/
+│   └── skill-architect/
 │       ├── SKILL.md
-│       ├── design-system/
 │       └── references/
 └── README.md
 ```
