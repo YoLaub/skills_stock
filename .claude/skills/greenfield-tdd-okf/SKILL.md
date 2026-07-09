@@ -8,6 +8,12 @@ description: Workflow répétable pour construire un produit greenfield en TDD a
 Workflow éprouvé sur CRM_TEAM (2026-07). Objectif : livrer vite sans dette, avec un
 contexte relisible en quelques fichiers.
 
+Références (à lire au moment indiqué, pas avant) :
+- `references/pieges.md` — pièges connus par stack. Consulter les sections « Génériques »
+  + celles de la stack du projet en phase 2 ; enrichir en phase 3/4.
+- `references/okf-fiche-template.md` — format de la fiche OKF. Consulter à la première
+  fiche de la phase 3.
+
 ## Phase 1 — Recherche & cadrage (avant TOUTE ligne de code)
 1. Chercher l'existant open source à imiter (web) : 2-3 références, noter stack et périmètre.
 2. **Ne jamais scraper/recoder ce qui a une API officielle ou une lib réutilisable** (licence permissive → l'utiliser telle quelle).
@@ -17,6 +23,8 @@ contexte relisible en quelques fichiers.
    parallélisables, vérification E2E) et le faire valider.
 
 ## Phase 2 — Bootstrap (une branche `feature/bootstrap`)
+- Lire `references/pieges.md` (sections « Génériques » + stack choisie) avant de configurer
+  l'outillage.
 - `git init -b main` → branche `dev` → une branche par feature. Merge `--no-ff` vers dev
   UNIQUEMENT si tests verts + E2E fait. Jamais de commit direct sur main/dev.
 - Monorepo : workspaces dès le départ si un package est partagé (sinon la résolution
@@ -32,28 +40,13 @@ contexte relisible en quelques fichiers.
 2. Toute logique est un service unique consommé par l'UI ET par les interfaces machine
    (tools MCP, API) — jamais de duplication.
 3. Suite verte → build → **E2E réel** (curl sur l'API/MCP, vrai appel externe si gratuit).
-4. Fiche OKF `docs/index/<feature>.md` : entête YAML (id, feature, branch, status, files,
-   tests, decisions) + corps ≤ 15 lignes (quoi, pièges). Dater les décisions.
-5. Ajouter les pièges rencontrés à `retro.md` AU MOMENT où ils mordent.
+4. Fiche OKF `docs/index/<feature>.md` au format `references/okf-fiche-template.md`.
+   Dater les décisions.
+5. Ajouter les pièges rencontrés à `retro.md` AU MOMENT où ils mordent ; si un piège est
+   générique (réutilisable hors projet), l'ajouter aussi à `references/pieges.md`.
 6. Commit conventionnel, merge --no-ff vers dev.
 
 ## Phase 4 — Clôture
 - Rétro finale dans `retro.md`, merge dev → main (jalon stable), tag éventuel.
-- Mettre à jour ce skill avec les nouveaux pièges.
-
-## Pièges connus (2026-07, stack Next 16 / Prisma 7 / Python)
-- npm workspaces + `exports` + `turbopack.root` pour un package TS partagé.
-- Prisma 7 : generator `prisma-client`, prisma.config.ts + dotenv, driver adapter requis.
-- jose/crypto sous vitest jsdom → `// @vitest-environment node` sur les tests de services.
-- pydantic→zod : `by_alias=True, exclude_none=True` (zod `.optional()` refuse null).
-- tsx/seeds : `import "dotenv/config"` obligatoire.
-- Webhooks inter-services : HMAC-SHA256 hex + comparaison timing-safe, contrat zod partagé.
-- Numérotation légale : transaction + contrainte unique (memberId, year, seq).
-- Scrapling : navigateurs via l'exe `scrapling install`, pas `python -m scrapling` ; le
-  Playwright ainsi installé est réutilisable pour du rendu PDF (ne pas réembarquer Chromium).
-- Rendre en headless une page protégée : jeton court (JWT) lié au chemin, autorisé dans le proxy.
-- Next : `new Response(new Uint8Array(buffer))` — BodyInit n'accepte pas Buffer directement.
-- Intl fr-FR : séparateurs = espaces insécables ; comparer via le formateur, pas une chaîne écrite.
-- Feature qui a besoin d'un secret/SMTP externe : prévoir un mode simulé (jsonTransport) pour
-  que l'app tourne sans config ; le vrai transport s'active si la variable d'env est présente.
-- Drag & drop : HTML5 dataTransfer + useOptimistic + server action typée, zéro dépendance.
+- Reporter les nouveaux pièges dans `references/pieges.md` (section datée par stack).
+  Ne modifier ce SKILL.md que si la **méthodologie** elle-même change.

@@ -98,7 +98,8 @@ Claude Code lit automatiquement tous les fichiers présents dans `.claude/agents
 │   ├── skill-optimizer/
 │   │   └── SKILL.md
 │   ├── greenfield-tdd-okf/
-│   │   └── SKILL.md
+│   │   ├── SKILL.md
+│   │   └── references/
 │   └── presentation-builder/
 │       ├── SKILL.md
 │       ├── design-system/
