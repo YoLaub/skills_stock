@@ -106,6 +106,12 @@ declare -a CATALOGUE=(
   "presentation-builder|Skill — Construit une présentation (Marp, .pptx/PDF) avec modèle assertion-preuve et porte de contrôle visuelle|skill|.claude/skills/presentation-builder/SKILL.md"
   # ── Skill Architect ────────────────────────
   "skill-architect|Skill — Architecture et refactor structurel de skills (SOLID transposé, patterns, checklist)|skill|.claude/skills/skill-architect/SKILL.md"
+  # ── Create MCP ─────────────────────────────
+  "create-mcp|Skill — Sécurise/audite un serveur MCP (identité, OAuth, cloisonnement, rate-limit, logging, sandbox)|skill|.claude/skills/create-mcp/SKILL.md"
+  # ── Pipeline Feature TDD (ActivCreew) ──────
+  "test-strategy|Skill — Pipeline feature 1/3 : tests RED/GREEN depuis specs Gherkin (unitaire/intégration/E2E/charge)|skill|.claude/skills/test-strategy/SKILL.md"
+  "dev-strategy|Skill — Pipeline feature 2/3 : implémentation TDD GREEN (SOLID/DRY, équipe d'agents)|skill|.claude/skills/dev-strategy/SKILL.md"
+  "ux-ui-strategy|Skill — Pipeline feature 3/3 : intégration maquette → design system sans casser le GREEN|skill|.claude/skills/ux-ui-strategy/SKILL.md"
 )
 
 # ── Bundles prédéfinis ────────────────────────
@@ -119,6 +125,8 @@ BUNDLES["optimizer"]="skill-optimizer"
 BUNDLES["greenfield"]="greenfield-tdd-okf"
 BUNDLES["presentation"]="presentation-builder"
 BUNDLES["architect"]="skill-architect"
+BUNDLES["mcp"]="create-mcp"
+BUNDLES["feature-tdd"]="test-strategy dev-strategy ux-ui-strategy"
 
 # ── Sélection interactive ─────────────────────
 show_catalogue() {
@@ -143,6 +151,8 @@ show_bundles() {
   echo -e "  ${BOLD}[6]${RESET} greenfield — Greenfield TDD + OKF (démarrage nouveau projet)"
   echo -e "  ${BOLD}[7]${RESET} presentation — Presentation Builder (slides Marp/pptx/PDF)"
   echo -e "  ${BOLD}[8]${RESET} architect — Skill Architect (conception/refactor de skills)"
+  echo -e "  ${BOLD}[9]${RESET} mcp     — Create MCP (sécurise/audite un serveur MCP)"
+  echo -e "  ${BOLD}[10]${RESET} feature-tdd — Pipeline feature TDD (test → dev → ux-ui, 3 skills)"
   echo ""
   echo -n "Choix : "
 }
@@ -192,6 +202,8 @@ get_ids_from_selection() {
       6) bundle_key="greenfield" ;;
       7) bundle_key="presentation" ;;
       8) bundle_key="architect" ;;
+      9) bundle_key="mcp" ;;
+      10) bundle_key="feature-tdd" ;;
       *) print_error "Bundle invalide."; exit 1 ;;
     esac
     read -ra selected_ids <<< "${BUNDLES[$bundle_key]}"

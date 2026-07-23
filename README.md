@@ -31,6 +31,10 @@ Un **skill** décrit un pipeline ou un processus complexe. Un **agent** est un s
 | `greenfield-tdd-okf` | Workflow répétable pour démarrer un projet greenfield en TDD avec index OKF : cadrage, plan validé, bootstrap monorepo git-flow, features en branches avec tests + E2E avant merge, rétro continue. |
 | `presentation-builder` | Construit une présentation orale (soutenance, pitch, talk, démo) avec modèle assertion-preuve et design system fermé — export Marp en .pptx/PDF, schémas Mermaid et graphiques automatiques, porte de contrôle visuelle avant livraison. |
 | `skill-architect` | Conçoit l'architecture d'un nouveau skill ou refactore la structure d'un skill existant — SOLID transposé aux skills, patterns (Template Method, Facade, Pipeline, Strategy), découpage par vitesse de changement, checklist de revue. |
+| `test-strategy` | Pipeline feature TDD (1/3) — génère les tests RED/GREEN depuis des specs Gherkin, routés par niveau (unitaire, intégration, E2E, charge), avec mode Conseil générique (pyramide, CI/CD, quality gates). Scopé projet ActivCreew, adaptable. |
+| `dev-strategy` | Pipeline feature TDD (2/3) — rend GREEN les tests RED : lecture des conventions projet, plan SOLID/DRY, implémentation par équipe d'agents, validation sans jamais toucher aux tests. Scopé projet ActivCreew, adaptable. |
+| `ux-ui-strategy` | Pipeline feature TDD (3/3) — colle la maquette au code : traduction vers les tokens/composants du design system, préservation du contrat de test (testid, textes, ARIA), a11y et responsive. Scopé projet ActivCreew, adaptable. |
+| `create-mcp` | Construit, durcit ou audite la sécurité d'un serveur MCP — identité par token personnel, OAuth 2.1, cloisonnement multi-tenant par tool, rate-limit, logging, mode sandbox, bearer sur le manifeste. |
 
 ### Agents — Pipeline RH
 
@@ -107,7 +111,19 @@ Claude Code lit automatiquement tous les fichiers présents dans `.claude/agents
 │   │   ├── SKILL.md
 │   │   ├── design-system/
 │   │   └── references/
-│   └── skill-architect/
+│   ├── skill-architect/
+│   │   ├── SKILL.md
+│   │   └── references/
+│   ├── create-mcp/
+│   │   ├── SKILL.md
+│   │   └── references/
+│   ├── test-strategy/
+│   │   ├── SKILL.md
+│   │   └── references/
+│   ├── dev-strategy/
+│   │   ├── SKILL.md
+│   │   └── references/
+│   └── ux-ui-strategy/
 │       ├── SKILL.md
 │       └── references/
 └── README.md
