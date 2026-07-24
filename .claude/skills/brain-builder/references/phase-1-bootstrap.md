@@ -7,8 +7,8 @@ Lire aussi `vault-structure.md` (le contrat de structure) avant d'exécuter.
 
 Avant de créer quoi que ce soit, collecter les informations essentielles. Si elles ne sont pas déjà dans la conversation, demander (idéalement en une seule passe avec AskUserQuestion) :
 
-1. **Nom du projet** (identifiant court, kebab-case de préférence : `activcreew`, `loar`, `mon-app`)
-2. **Chemin du vault** (ex: `~/ObsidianVaults/activcreew-brain/` — par défaut suggérer ce pattern)
+1. **Nom du projet** (identifiant court, kebab-case de préférence : `mon-app`, `ma-api`, `boutique-x`)
+2. **Chemin du vault** (ex: `~/ObsidianVaults/mon-app-brain/` — par défaut suggérer ce pattern)
 3. **Description courte** (1-2 phrases, sera la racine de l'identité du cerveau)
 4. **Stack / domaine** (pour calibrer les premières entités : "Strapi + Next.js", "SwiftUI + FastAPI", "recherche bio", etc.)
 5. **Sources initiales disponibles** (optionnel : l'utilisateur a-t-il déjà des docs à poser dans `raw/` dès le bootstrap ?)
@@ -21,8 +21,8 @@ Deux voies possibles selon l'environnement :
 
 ```bash
 python <dossier-du-skill>/scripts/bootstrap_brain.py \
-  --name "activcreew" \
-  --path "~/ObsidianVaults/activcreew-brain" \
+  --name "mon-app" \
+  --path "~/ObsidianVaults/mon-app-brain" \
   --description "Backend Strapi v5 + Turborepo frontend" \
   --stack "strapi,nextjs,postgres"
 ```
@@ -46,7 +46,7 @@ Une fois la structure créée, personnaliser les fichiers d'amorce :
 Après bootstrap, toujours produire un récapitulatif à l'utilisateur :
 
 ```
-✅ Cerveau "activcreew" créé à ~/ObsidianVaults/activcreew-brain/
+✅ Cerveau "mon-app" créé à ~/ObsidianVaults/mon-app-brain/
 
 Structure :
   raw/          (0 fichiers — à remplir)

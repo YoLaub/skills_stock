@@ -6,8 +6,8 @@ Idempotent : si le vault existe déjà, ne détruit rien, complète seulement ce
 
 Usage:
     python bootstrap_brain.py \\
-        --name "activcreew" \\
-        --path "~/ObsidianVaults/activcreew-brain" \\
+        --name "mon-app" \\
+        --path "~/ObsidianVaults/mon-app-brain" \\
         --description "Backend Strapi v5 + Turborepo frontend" \\
         --stack "strapi,nextjs,postgres"
 

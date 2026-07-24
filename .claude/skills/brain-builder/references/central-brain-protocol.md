@@ -18,7 +18,7 @@
                 ┌─────────────┼─────────────┐
                 │             │             │
         ┌───────┴──────┐ ┌───┴────┐ ┌──────┴────────┐
-        │ activcreew   │ │  loar  │ │  autre-projet │
+        │   mon-app    │ │ ma-api │ │  autre-projet │
         │   -brain     │ │ -brain │ │    -brain     │
         └──────────────┘ └────────┘ └───────────────┘
 ```
@@ -29,7 +29,7 @@ Chaque cerveau projet est **indépendant** (son propre vault, son propre graph O
 
 Un concept vit dans UN SEUL cerveau.
 
-- Spécifique au projet → vit dans le cerveau projet (ex: `AuthService` d'ActivCreew)
+- Spécifique au projet → vit dans le cerveau projet (ex: `AuthService` de mon-app)
 - Transverse à plusieurs projets → vit dans le central (ex: "Ma préférence : Claude Code pour les fix de bugs", "Pattern : tests fix-one-bug-at-a-time")
 - Le cerveau projet ne fait que **référencer** les concepts du central.
 
@@ -48,7 +48,7 @@ Le fichier `wiki/_meta/CENTRAL_LINKS.md` de chaque cerveau projet contient une l
 
 - `central://concepts/fix-one-bug-at-a-time` — Utilisé dans toute la stratégie de test backend
 - `central://preferences/prompt-style-claude-code` — Appliqué à tous les prompts générés pour ce projet
-- `central://methods/bmad-cdc-structure` — Structure utilisée pour le spec Loar
+- `central://methods/bmad-cdc-structure` — Structure utilisée pour le cahier des charges de ma-api
 ```
 
 Le préfixe `central://` est une convention **purement textuelle** (pas un vrai protocole URI) qui signale au lecteur humain ET aux phases futures du skill qu'il s'agit d'une ref inter-vault.
@@ -66,7 +66,7 @@ Le préfixe `central://` est une convention **purement textuelle** (pas un vrai 
 Créer un symlink `wiki/_central/` qui pointe vers `~/central-brain/wiki/`. Les notes centrales deviennent accessibles comme si elles étaient dans le vault projet.
 
 ```bash
-ln -s ~/central-brain/wiki ~/ObsidianVaults/activcreew-brain/wiki/_central
+ln -s ~/central-brain/wiki ~/ObsidianVaults/mon-app-brain/wiki/_central
 ```
 
 **Avantages** :
