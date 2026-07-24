@@ -47,6 +47,19 @@ Rédiger à la racine du projet en suivant le gabarit et les bonnes pratiques de
 Marquer explicitement `_à décider_` ce qui n'a pas pu être tranché — jamais de valeur
 inventée.
 
+Avant de rédiger, vérifier la présence du bloc **Mode de collaboration** dans
+`~/.claude/CLAUDE.md` (chercher la ligne « Le désaccord est attendu »).
+- **Présent** → ne pas le recopier dans le CLAUDE.md du projet ; il s'applique déjà à
+  toutes les sessions de la machine.
+- **Absent** (nouvelle machine, `~/.claude/CLAUDE.md` inexistant) → proposer en question
+  fermée : l'ajouter à `~/.claude/CLAUDE.md` (recommandé, une seule source pour tous les
+  projets) ou l'inscrire dans le CLAUDE.md du projet seul.
+
+Le texte de référence du bloc est dans
+[references/bonnes-pratiques-claude-md.md](references/bonnes-pratiques-claude-md.md).
+Il est recopié mot pour mot : aucun résumé, aucune reformulation, aucune question sur
+son contenu.
+
 ### 4. Validation et suite
 Présenter le CLAUDE.md, demander une validation (question fermée : valider / ajuster).
 Une fois validé seulement, proposer l'étape suivante (bootstrap du repo, première

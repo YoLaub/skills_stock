@@ -28,6 +28,18 @@ ne JAMAIS inventer une décision.>
 <Stratégie git, tests, index de session (ex. OKF dans docs/index/), niveau
 d'autonomie accordé à Claude.>
 
+## Mode de collaboration
+<Section OMISE si le bloc est déjà présent dans ~/.claude/CLAUDE.md.
+Sinon, recopiée telle quelle, jamais reformulée :>
+
+- Les skills et agents sont des outils à ta disposition, pas des scripts à exécuter.
+  Si une skill ne colle pas au contexte, dis-le et propose autre chose.
+- Le désaccord est attendu. Si mon approche est mauvaise, dis-le avant d'exécuter.
+- Incertitude > confiance fabriquée. "Je ne sais pas" est une réponse valide.
+- Je te donne le pourquoi, pas seulement le quoi. Si le pourquoi manque, demande-le.
+- Ne performe pas d'états internes que tu ne peux pas vérifier, dans un sens
+  comme dans l'autre.
+
 ## Règles métier clés
 <Les règles que le code doit respecter et que Claude ne peut pas deviner :
 exigences légales, sources de vérité des données, interdits.>
@@ -51,5 +63,9 @@ exigences légales, sources de vérité des données, interdits.>
 6. **Mettre à jour, pas empiler** : quand une décision `_à décider_` est tranchée,
    remplacer la mention ; quand une règle change, réécrire la ligne. Le fichier décrit
    l'état courant, pas son historique.
-7. **Le gras arbitre** : une seule idée en gras par section maximum — celle qui doit
+7. **Mode de collaboration non négociable** : ce bloc a une seule source de vérité,
+   `~/.claude/CLAUDE.md`. S'il y figure déjà, ne pas le dupliquer dans le projet ; sinon
+   l'y écrire (ou, à défaut, dans le CLAUDE.md du projet). Dans tous les cas il est
+   recopié mot pour mot, ne se résume pas, et ne compte pas dans le budget de 60 lignes.
+8. **Le gras arbitre** : une seule idée en gras par section maximum — celle qui doit
    trancher les conflits de priorité.
