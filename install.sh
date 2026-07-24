@@ -108,10 +108,14 @@ declare -a CATALOGUE=(
   "skill-architect|Skill — Architecture et refactor structurel de skills (SOLID transposé, patterns, checklist)|skill|.claude/skills/skill-architect/SKILL.md"
   # ── Create MCP ─────────────────────────────
   "create-mcp|Skill — Sécurise/audite un serveur MCP (identité, OAuth, cloisonnement, rate-limit, logging, sandbox)|skill|.claude/skills/create-mcp/SKILL.md"
-  # ── Pipeline Feature TDD (ActivCreew) ──────
-  "test-strategy|Skill — Pipeline feature 1/3 : tests RED/GREEN depuis specs Gherkin (unitaire/intégration/E2E/charge)|skill|.claude/skills/test-strategy/SKILL.md"
-  "dev-strategy|Skill — Pipeline feature 2/3 : implémentation TDD GREEN (SOLID/DRY, équipe d'agents)|skill|.claude/skills/dev-strategy/SKILL.md"
-  "ux-ui-strategy|Skill — Pipeline feature 3/3 : intégration maquette → design system sans casser le GREEN|skill|.claude/skills/ux-ui-strategy/SKILL.md"
+  # ── Init Projet + Règles ───────────────────
+  "init-projet|Skill — Cadrage par QCM → CLAUDE.md, puis amorçage du BRAIN et du journal d'erreurs|skill|.claude/skills/init-projet/SKILL.md"
+  "compile-rules|Skill — Compile le journal d'erreurs (bag.ndjson) en règles projet routées par manifeste|skill|.claude/skills/compile-rules/SKILL.md"
+  # ── Vitrine Locale ─────────────────────────
+  "vitrine-locale|Skill — Site vitrine one-page pour commerce local (Astro + Tailwind, git-flow + TDD + OKF)|skill|.claude/skills/vitrine-locale/SKILL.md"
+  # ── Architecture ───────────────────────────
+  "archi-scanner|Skill — Scanner d'architecture progressif, produit un INDEX réutilisable|skill|.claude/skills/archi-scanner/SKILL.md"
+  "archi-diagrams|Skill — Diagrammes Mermaid à la demande depuis l'INDEX (classes, MCD, séquence, use-case)|skill|.claude/skills/archi-diagrams/SKILL.md"
 )
 
 # ── Bundles prédéfinis ────────────────────────
@@ -126,7 +130,9 @@ BUNDLES["greenfield"]="greenfield-tdd-okf"
 BUNDLES["presentation"]="presentation-builder"
 BUNDLES["architect"]="skill-architect"
 BUNDLES["mcp"]="create-mcp"
-BUNDLES["feature-tdd"]="test-strategy dev-strategy ux-ui-strategy"
+BUNDLES["init"]="init-projet compile-rules"
+BUNDLES["vitrine"]="vitrine-locale"
+BUNDLES["archi"]="archi-scanner archi-diagrams"
 
 # ── Sélection interactive ─────────────────────
 show_catalogue() {
@@ -152,7 +158,9 @@ show_bundles() {
   echo -e "  ${BOLD}[7]${RESET} presentation — Presentation Builder (slides Marp/pptx/PDF)"
   echo -e "  ${BOLD}[8]${RESET} architect — Skill Architect (conception/refactor de skills)"
   echo -e "  ${BOLD}[9]${RESET} mcp     — Create MCP (sécurise/audite un serveur MCP)"
-  echo -e "  ${BOLD}[10]${RESET} feature-tdd — Pipeline feature TDD (test → dev → ux-ui, 3 skills)"
+  echo -e "  ${BOLD}[10]${RESET} init    — Init Projet + Compile Rules (CLAUDE.md, BRAIN, journal d'erreurs)"
+  echo -e "  ${BOLD}[11]${RESET} vitrine — Vitrine Locale (site one-page Astro pour commerce local)"
+  echo -e "  ${BOLD}[12]${RESET} archi   — Archi Scanner + Archi Diagrams (indexation et diagrammes)"
   echo ""
   echo -n "Choix : "
 }
@@ -203,7 +211,9 @@ get_ids_from_selection() {
       7) bundle_key="presentation" ;;
       8) bundle_key="architect" ;;
       9) bundle_key="mcp" ;;
-      10) bundle_key="feature-tdd" ;;
+      10) bundle_key="init" ;;
+      11) bundle_key="vitrine" ;;
+      12) bundle_key="archi" ;;
       *) print_error "Bundle invalide."; exit 1 ;;
     esac
     read -ra selected_ids <<< "${BUNDLES[$bundle_key]}"

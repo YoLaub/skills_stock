@@ -24,6 +24,8 @@ Un **skill** décrit un pipeline ou un processus complexe. Un **agent** est un s
 
 | Skill | Description |
 |-------|-------------|
+| `archi-scanner` | Scanner d'architecture progressif et générique — indexe un codebase par étapes (stack, routes, controllers, services, entités) sans saturer le contexte, et produit un INDEX réutilisable. Prérequis d'`archi-diagrams`. |
+| `archi-diagrams` | Génère des diagrammes Mermaid à la demande depuis l'INDEX produit par `archi-scanner` — classes, architecture, MCD, séquence, cas d'utilisation. |
 | `rh-pipeline` | Pipeline RH complet multi-agents pour traiter une candidature de A à Z — analyse CV, mise en forme, email recruteur, entretiens, bilan final. |
 | `cert-pipeline` | Pipeline de préparation à une certification ou titre professionnel — chargement référentiel, analyse des écarts, fiches de révision, simulation jury, bilan. |
 | `brain-builder` | Crée et maintient des "cerveaux projets" sous forme de vaults Obsidian structurés (architecture 3 couches : raw / wiki / reports), inspirés de l'approche LLM Wiki. |
@@ -31,10 +33,10 @@ Un **skill** décrit un pipeline ou un processus complexe. Un **agent** est un s
 | `greenfield-tdd-okf` | Workflow répétable pour démarrer un projet greenfield en TDD avec index OKF : cadrage, plan validé, bootstrap monorepo git-flow, features en branches avec tests + E2E avant merge, rétro continue. |
 | `presentation-builder` | Construit une présentation orale (soutenance, pitch, talk, démo) avec modèle assertion-preuve et design system fermé — export Marp en .pptx/PDF, schémas Mermaid et graphiques automatiques, porte de contrôle visuelle avant livraison. |
 | `skill-architect` | Conçoit l'architecture d'un nouveau skill ou refactore la structure d'un skill existant — SOLID transposé aux skills, patterns (Template Method, Facade, Pipeline, Strategy), découpage par vitesse de changement, checklist de revue. |
-| `test-strategy` | Pipeline feature TDD (1/3) — génère les tests RED/GREEN depuis des specs Gherkin, routés par niveau (unitaire, intégration, E2E, charge), avec mode Conseil générique (pyramide, CI/CD, quality gates). Scopé projet ActivCreew, adaptable. |
-| `dev-strategy` | Pipeline feature TDD (2/3) — rend GREEN les tests RED : lecture des conventions projet, plan SOLID/DRY, implémentation par équipe d'agents, validation sans jamais toucher aux tests. Scopé projet ActivCreew, adaptable. |
-| `ux-ui-strategy` | Pipeline feature TDD (3/3) — colle la maquette au code : traduction vers les tokens/composants du design system, préservation du contrat de test (testid, textes, ARIA), a11y et responsive. Scopé projet ActivCreew, adaptable. |
+| `vitrine-locale` | Construit un site vitrine one-page pour un commerce local en Astro + Tailwind — cadrage, recherche design, charte anti-générique, développement git-flow + TDD + index OKF. |
 | `create-mcp` | Construit, durcit ou audite la sécurité d'un serveur MCP — identité par token personnel, OAuth 2.1, cloisonnement multi-tenant par tool, rate-limit, logging, mode sandbox, bearer sur le manifeste. |
+| `init-projet` | Initialise un projet en rédigeant son CLAUDE.md par questions fermées (QCM), puis amorce le BRAIN du projet (`~/brain/<projet>/`) et le bloc de journalisation des erreurs. |
+| `compile-rules` | Compile le journal d'erreurs (`bag.ndjson`) en règles projet : regroupement par trigger, scoring, promotion/démotion, régénération du manifeste de routage. Sur demande explicite uniquement, jamais d'écriture sans validation. |
 
 ### Agents — Pipeline RH
 
@@ -94,6 +96,12 @@ Claude Code lit automatiquement tous les fichiers présents dans `.claude/agents
 │   │   └── cert-debrief.md
 │   └── [domaine]/                   ← futur domaine
 ├── skills/
+│   ├── archi-scanner/
+│   │   ├── SKILL.md
+│   │   └── references/
+│   ├── archi-diagrams/
+│   │   ├── SKILL.md
+│   │   └── references/
 │   ├── rh-pipeline/
 │   │   └── SKILL.md
 │   ├── cert-pipeline/
@@ -117,13 +125,13 @@ Claude Code lit automatiquement tous les fichiers présents dans `.claude/agents
 │   ├── create-mcp/
 │   │   ├── SKILL.md
 │   │   └── references/
-│   ├── test-strategy/
+│   ├── init-projet/
 │   │   ├── SKILL.md
 │   │   └── references/
-│   ├── dev-strategy/
+│   ├── compile-rules/
 │   │   ├── SKILL.md
 │   │   └── references/
-│   └── ux-ui-strategy/
+│   └── vitrine-locale/
 │       ├── SKILL.md
 │       └── references/
 └── README.md
