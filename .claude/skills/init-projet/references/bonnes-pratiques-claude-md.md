@@ -48,6 +48,10 @@ exigences légales, sources de vérité des données, interdits.>
 <dev / test / build / deploy. Compléter dès que la stack est choisie.>
 ```
 
+La ligne `BRAIN:` et la section `## Journal d'erreurs` sont **appendées après coup**, à
+l'étape 5 du skill — ne pas les rédiger ici. Voir
+[journal-erreurs.md](journal-erreurs.md).
+
 ## Règles de rédaction
 1. **Court** : viser ≤ 60 lignes. Si une section grossit, la déplacer dans `docs/` et
    ne garder qu'un pointeur.

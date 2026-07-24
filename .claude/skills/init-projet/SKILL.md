@@ -3,9 +3,11 @@ name: init-projet
 description: >
   Initialise un nouveau projet en rédigeant d'abord son CLAUDE.md via une série de
   questions fermées (QCM), afin de capturer le contexte une bonne fois pour toutes et
-  d'optimiser les sessions suivantes.
+  d'optimiser les sessions suivantes. Amorce ensuite le BRAIN du projet
+  (`~/brain/<projet>/`) et le bloc de journalisation des erreurs.
   Intentions déclenchantes : "init projet", "initialise le projet", "nouveau projet",
   "démarre le projet", "crée le CLAUDE.md", "bootstrap le projet".
+  Ne pas confondre avec compile-rules, qui compile ce journal en règles une fois rempli.
 ---
 
 # Init Projet — Cadrage par questions fermées → CLAUDE.md
@@ -60,11 +62,26 @@ Le texte de référence du bloc est dans
 Il est recopié mot pour mot : aucun résumé, aucune reformulation, aucune question sur
 son contenu.
 
-### 4. Validation et suite
+### 4. Validation
 Présenter le CLAUDE.md, demander une validation (question fermée : valider / ajuster).
-Une fois validé seulement, proposer l'étape suivante (bootstrap du repo, première
-feature) — par exemple via le skill `greenfield-tdd-okf` s'il est disponible.
+
+### 5. Amorçage du BRAIN et du journal d'erreurs
+Une fois le CLAUDE.md validé seulement, dérouler
+[references/journal-erreurs.md](references/journal-erreurs.md) : arborescence
+`~/brain/<PROJECT_KEY>/`, bloc de journalisation appendé au CLAUDE.md, bloc de routage
+laissé dormant. Écriture en APPEND uniquement, jamais de duplication d'un bloc existant.
+
+### 6. Suite
+Proposer l'étape suivante (bootstrap du repo, première feature) — par exemple via le
+skill `greenfield-tdd-okf` s'il est disponible.
 
 ## Sortie
 - `CLAUDE.md` à la racine du projet, validé par l'utilisateur.
+- `~/brain/<PROJECT_KEY>/` : `rules/`, `bag.ndjson` vide, `PENDING-rules-block.md`.
+- `~/brain/global/rules/`.
 - Zéro autre fichier généré par ce skill.
+
+## Évolution de ce skill
+- Gabarit du CLAUDE.md et règles de rédaction → `references/bonnes-pratiques-claude-md.md`.
+- Mécanique BRAIN / journal d'erreurs → `references/journal-erreurs.md`.
+- Ne modifier ce SKILL.md que si le déroulé de cadrage change.
