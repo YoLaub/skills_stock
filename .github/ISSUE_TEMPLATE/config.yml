@@ -1,0 +1,9 @@
+# Les issues vierges restent activées volontairement : le skill send-feedback se
+# rabat sur une simple URL `issues/new?title=…&body=…` quand une URL de formulaire
+# pré-rempli serait trop longue, et ce repli ne fonctionne que si les issues vierges
+# existent.
+blank_issues_enabled: true
+contact_links:
+  - name: Ce que sont ces skills
+    url: https://github.com/YoLaub/skills_stock#readme
+    about: Le catalogue, ce que fait chaque skill, et comment installer le plugin.

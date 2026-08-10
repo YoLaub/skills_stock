@@ -2,28 +2,38 @@
 
 ## Règle d'intégration d'un nouveau pipeline
 
-À chaque ajout d'un pipeline dans ce dépôt, suivre exactement ces étapes dans l'ordre.
+Depuis le passage en plugin Claude Code (`yls@yl-solution`, 2026-08), l'installation
+est automatique : publier un skill ou un agent, c'est committer son fichier au bon
+endroit. Il n'y a plus de `install.sh`, plus de `CATALOGUE`, plus de `BUNDLES` à
+maintenir.
 
 ---
 
-## Structure cible d'un pipeline
+## Structure cible d'un pipeline (racine du dépôt, pas `.claude/`)
 
 ```
-.claude/
-├── agents/
-│   └── [domaine]/           ← un sous-dossier par domaine métier
-│       ├── agent-1.md
-│       ├── agent-2.md
-│       └── ...
-└── skills/
-    └── [nom-pipeline]/
-        └── SKILL.md
+agents/
+├── agent-1.md              ← à plat, PAS de sous-dossier par domaine
+├── agent-2.md
+└── ...
+skills/
+└── [nom-pipeline]/
+    └── SKILL.md
 ```
+
+**Piège vérifié (2026-08)** : la découverte par défaut du plugin scanne `agents/` à
+plat — un fichier dans `agents/[domaine]/agent.md` n'est PAS découvert
+(`claude plugin details yls@yl-solution` le confirme : 0 agent tant que les fichiers
+sont nichés, 12 dès qu'ils sont remontés à la racine de `agents/`). `skills/`, lui,
+attend bien un sous-dossier par skill (`skills/[nom]/SKILL.md`) — l'asymétrie est
+réelle, pas une erreur de manip.
 
 **Convention de nommage :**
-- Le sous-dossier `agents/` porte le nom court du domaine (`rh`, `cert`, `finance`…)
 - Le dossier skill porte le nom du pipeline avec suffixe `-pipeline` (`rh-pipeline`, `cert-pipeline`…)
-- Les agents sont nommés en kebab-case, préfixés par le domaine si nécessaire (`cert-intake`, `cv-analyst`…)
+- Les agents sont nommés en kebab-case, préfixés par le domaine si nécessaire pour
+  éviter une collision de nom entre pipelines (`cert-intake`, `cv-analyst`…) —
+  puisqu'ils sont désormais tous au même niveau, le préfixe est ce qui évite les
+  collisions, pas un sous-dossier.
 
 ---
 
@@ -32,84 +42,45 @@
 ### 1. Copier les fichiers
 
 ```bash
-# Créer les dossiers
-mkdir -p .claude/agents/[domaine] .claude/skills/[nom-pipeline]
-
-# Copier les agents
-cp /source/agents/*.md .claude/agents/[domaine]/
-
-# Copier le skill
-cp /source/skills/[nom-pipeline]/SKILL.md .claude/skills/[nom-pipeline]/
+mkdir -p skills/[nom-pipeline]
+cp /source/agents/*.md agents/
+cp /source/skills/[nom-pipeline]/SKILL.md skills/[nom-pipeline]/
 ```
 
-### 2. Mettre à jour `install.sh`
+### 2. Mettre à jour `README.md` (racine)
 
-**a) Ajouter les entrées dans `CATALOGUE` :**
+Dans la section **Catalogue**, ajouter une ligne pour le skill et une par agent.
+Dans la section **Structure du dépôt**, ajouter les nouveaux fichiers dans l'arbre
+(`agents/` reste une liste à plat).
 
-```bash
-# ── [Nom Pipeline] ────────────────────────
-"[nom-pipeline]|[Nom Pipeline] complet (skill orchestrateur)|skill|.claude/skills/[nom-pipeline]/SKILL.md"
-"[agent-1]|Agent — [description courte]|agent|.claude/agents/[domaine]/[agent-1].md"
-# ... un par agent
-```
+### 3. Mettre à jour `.claude/README.md`
 
-Format d'une entrée : `"id|label|type(skill|agent)|chemin-dans-repo"`
-
-**b) Ajouter le bundle dans `BUNDLES` :**
-
-```bash
-BUNDLES["[domaine]"]="[nom-pipeline] [agent-1] [agent-2] ..."
-```
-
-**c) Mettre à jour `BUNDLES["tout"]`** pour inclure les nouveaux IDs.
-
-**d) Ajouter l'entrée dans `show_bundles()` :**
-
-```bash
-echo -e "  ${BOLD}[N]${RESET} [domaine]  — [description courte]"
-```
-
-**e) Ajouter le cas dans `get_ids_from_selection()` :**
-
-```bash
-N) bundle_key="[domaine]" ;;
-```
-
-> Incrémenter N en suivant la numérotation existante.
-
-### 3. Mettre à jour `README.md` (racine)
-
-Dans la section **Structure du dépôt**, ajouter le nouveau domaine dans l'arbre :
-
-```
-├── agents/
-│   ├── [domaine]/              ← [Nom Pipeline] (N agents)
-│   │   ├── agent-1.md
-│   │   └── ...
-```
-
-Et ajouter le skill dans la liste des skills :
-
-```
-├── skills/
-│   └── [nom-pipeline]/
-│       └── SKILL.md
-```
-
-### 4. Mettre à jour `.claude/README.md`
-
-Ajouter le pipeline dans la structure `.claude/` et créer une section **Pipeline [Nom]** avec :
+Ajouter le pipeline avec :
 - Usage rapide (commande de déclenchement)
 - Tableau des outputs avec `[pipeline]/output/` comme dossier cible
+
+### 4. Valider
+
+```bash
+claude plugin validate .
+claude plugin marketplace add ./           # une fois, si pas déjà fait localement
+claude plugin install yls@yl-solution
+claude plugin details yls@yl-solution      # vérifier le compte Skills/Agents
+claude plugin uninstall yls                # nettoyer après vérif
+claude plugin marketplace remove yl-solution
+```
+
+L'inventaire est le vrai test — un manifeste peut valider tout en découvrant zéro
+composant (c'est exactement ce que fait un fichier mal placé).
 
 ---
 
 ## Pipelines actifs
 
-| Pipeline | Domaine | Agents | Skill | Bundle |
-|----------|---------|--------|-------|--------|
-| RH Pipeline | `rh` | 6 agents (`cv-analyst`, `cv-designer`, `cv-recruiter`, `rh-interviewer`, `tech-interviewer`, `debrief-agent`) | `rh-pipeline` | `rh`, `cv-only` |
-| Cert Pipeline | `cert` | 6 agents (`cert-intake`, `referentiel-loader`, `gap-analyser`, `exam-preparer`, `cert-interviewer`, `cert-debrief`) | `cert-pipeline` | `cert` |
+| Pipeline | Agents | Skill |
+|----------|--------|-------|
+| RH Pipeline | `cv-analyst`, `cv-designer`, `cv-recruiter`, `rh-interviewer`, `tech-interviewer`, `debrief-agent` | `rh-pipeline` |
+| Cert Pipeline | `cert-intake`, `referentiel-loader`, `gap-analyser`, `exam-preparer`, `cert-interviewer`, `cert-debrief` | `cert-pipeline` |
 
 ---
 
@@ -151,20 +122,4 @@ description: >
 ## Étapes du pipeline ← tableau # | Agent | Input | Output
 ## Contexte partagé  ← JSON de l'état partagé entre agents
 ## Comment lancer le pipeline
-```
-
----
-
-## Vérification post-intégration
-
-```bash
-# Vérifier la structure des fichiers copiés
-ls .claude/agents/[domaine]/
-ls .claude/skills/[nom-pipeline]/
-
-# Vérifier que le CATALOGUE contient les nouveaux IDs
-grep "[nom-pipeline]" install.sh
-
-# Vérifier que le bundle est déclaré
-grep "BUNDLES\[\"[domaine]\"\]" install.sh
 ```

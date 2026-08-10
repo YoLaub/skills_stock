@@ -1,18 +1,31 @@
 ---
 name: greenfield-tdd-okf
-description: Workflow répétable pour construire un produit greenfield en TDD avec index OKF — recherche de l'existant, cadrage par questions, plan validé, bootstrap monorepo git-flow, features en branches avec tests verts + E2E avant merge, index OKF par feature, rétro continue. Utiliser au démarrage d'un nouveau projet applicatif ou d'un gros module.
+description: Workflow répétable pour construire un produit greenfield en TDD avec index OKF, en deux modes — viber (rapide, direct au code) ou coder (cadrage documenté → backlog GitHub → GitHub Flow). Demande toujours le mode en premier. Utiliser au démarrage d'un nouveau projet applicatif ou d'un gros module.
 ---
 
 # Greenfield TDD + OKF
 
-Workflow éprouvé sur CRM_TEAM (2026-07). Objectif : livrer vite sans dette, avec un
-contexte relisible en quelques fichiers.
+Workflow éprouvé sur CRM_TEAM (2026-07) et généralisé sur Survival AI (2026-08). Objectif :
+livrer vite sans dette, avec un contexte relisible en quelques fichiers.
 
 Références (à lire au moment indiqué, pas avant) :
 - `references/pieges.md` — pièges connus par stack. Consulter les sections « Génériques »
   + celles de la stack du projet en phase 2 ; enrichir en phase 3/4.
 - `references/okf-fiche-template.md` — format de la fiche OKF. Consulter à la première
-  fiche de la phase 3.
+  fiche de la phase 3 (mode viber) ou de la phase 3 coder.
+- `references/mode-coder.md` — déroulé complet du mode coder (phases 1 à 4). À lire
+  entièrement dès que le mode coder est choisi, pas avant.
+
+## Phase 0 — Choix du mode (toujours, avant toute autre action)
+
+Poser une question fermée (AskUserQuestion) : **viber** (rapide — cadrage minimal, direct
+au bootstrap puis aux features, phases 1-4 ci-dessous) ou **coder** (produit à part
+entière — cadrage documenté en 5 fichiers `docs/`, Epics + Issues GitHub, TDD via GitHub
+Flow, `references/mode-coder.md`) ? Ne jamais deviner : si l'utilisateur l'a déjà dit
+dans son message initial, sauter la question et confirmer le choix en une phrase.
+
+**Si coder** → dérouler intégralement `references/mode-coder.md`, ignorer les phases 1-4.
+**Si viber** → continuer ci-dessous.
 
 ## Phase 1 — Recherche & cadrage (avant TOUTE ligne de code)
 1. Chercher l'existant open source à imiter (web) : 2-3 références, noter stack et périmètre.
@@ -49,4 +62,6 @@ Références (à lire au moment indiqué, pas avant) :
 ## Phase 4 — Clôture
 - Rétro finale dans `retro.md`, merge dev → main (jalon stable), tag éventuel.
 - Reporter les nouveaux pièges dans `references/pieges.md` (section datée par stack).
-  Ne modifier ce SKILL.md que si la **méthodologie** elle-même change.
+  Ne modifier ce SKILL.md que si la méthodologie elle-même change ; le déroulé détaillé
+  du mode coder évolue dans `references/mode-coder.md`, ses templates dans
+  `references/templates-coder/`.

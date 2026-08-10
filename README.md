@@ -30,13 +30,14 @@ Un **skill** décrit un pipeline ou un processus complexe. Un **agent** est un s
 | `cert-pipeline` | Pipeline de préparation à une certification ou titre professionnel — chargement référentiel, analyse des écarts, fiches de révision, simulation jury, bilan. |
 | `brain-builder` | Crée et maintient des "cerveaux projets" sous forme de vaults Obsidian structurés (architecture 3 couches : raw / wiki / reports), inspirés de l'approche LLM Wiki. |
 | `skill-optimizer` | Optimise un SKILL.md existant par micro-éditions validées (approche SkillOpt) : baseline → proposition → évaluation → commit ou revert. |
-| `greenfield-tdd-okf` | Workflow répétable pour démarrer un projet greenfield en TDD avec index OKF : cadrage, plan validé, bootstrap monorepo git-flow, features en branches avec tests + E2E avant merge, rétro continue. |
+| `greenfield-tdd-okf` | Workflow répétable pour démarrer un projet greenfield en TDD avec index OKF, en deux modes choisis en Phase 0 — **viber** (cadrage minimal, direct au bootstrap git-flow) ou **coder** (cadrage documenté en 5 fichiers `docs/`, Epics + Issues GitHub, TDD via GitHub Flow). |
 | `presentation-builder` | Construit une présentation orale (soutenance, pitch, talk, démo) avec modèle assertion-preuve et design system fermé — export Marp en .pptx/PDF, schémas Mermaid et graphiques automatiques, porte de contrôle visuelle avant livraison. |
 | `skill-architect` | Conçoit l'architecture d'un nouveau skill ou refactore la structure d'un skill existant — SOLID transposé aux skills, patterns (Template Method, Facade, Pipeline, Strategy), découpage par vitesse de changement, checklist de revue. |
 | `vitrine-locale` | Construit un site vitrine one-page pour un commerce local en Astro + Tailwind — cadrage, recherche design, charte anti-générique, développement git-flow + TDD + index OKF. |
 | `create-mcp` | Construit, durcit ou audite la sécurité d'un serveur MCP — identité par token personnel, OAuth 2.1, cloisonnement multi-tenant par tool, rate-limit, logging, mode sandbox, bearer sur le manifeste. |
 | `init-projet` | Initialise un projet en rédigeant son CLAUDE.md par questions fermées (QCM), puis amorce le BRAIN du projet (`~/brain/<projet>/`) et le bloc de journalisation des erreurs. |
 | `compile-rules` | Compile le journal d'erreurs (`bag.ndjson`) en règles projet : regroupement par trigger, scoring, promotion/démotion, régénération du manifeste de routage. Sur demande explicite uniquement, jamais d'écriture sans validation. |
+| `send-feedback` | Envoie un retour sur ces skills en amont, sous forme d'issue GitHub sur `YoLaub/skills_stock` — reprend les mots de l'utilisateur tels quels, propose le contexte technique autour, anonymise avant publication. |
 
 ### Agents — Pipeline RH
 
@@ -71,7 +72,10 @@ Un **skill** décrit un pipeline ou un processus complexe. Un **agent** est un s
 | Déclenché par | Une intention générale (*"lance le pipeline X"*) | Une étape du pipeline ou un appel direct |
 | Analogie | Chef de projet | Spécialiste métier |
 
-Claude Code lit automatiquement tous les fichiers présents dans `.claude/agents/` et `.claude/skills/` au démarrage d'une session. Aucune configuration supplémentaire n'est nécessaire.
+Ce dépôt est packagé comme un **plugin Claude Code** (`yls`, servi par le marketplace
+`yl-solution`) : une fois installé (voir [Installation](#installation)), Claude Code
+découvre automatiquement tout `agents/`, `skills/` et `commands/` du dépôt, sans copie
+manuelle ni configuration.
 
 ---
 
@@ -79,22 +83,24 @@ Claude Code lit automatiquement tous les fichiers présents dans `.claude/agents
 
 ```
 .
-├── agents/
-│   ├── rh/                          ← Pipeline RH (6 agents)
-│   │   ├── cv-analyst.md
-│   │   ├── cv-designer.md
-│   │   ├── cv-recruiter.md
-│   │   ├── rh-interviewer.md
-│   │   ├── tech-interviewer.md
-│   │   └── debrief-agent.md
-│   ├── cert/                        ← Pipeline Certification (6 agents)
-│   │   ├── cert-intake.md
-│   │   ├── referentiel-loader.md
-│   │   ├── gap-analyser.md
-│   │   ├── exam-preparer.md
-│   │   ├── cert-interviewer.md
-│   │   └── cert-debrief.md
-│   └── [domaine]/                   ← futur domaine
+├── .claude-plugin/
+│   ├── marketplace.json             ← marketplace "yl-solution"
+│   └── plugin.json                  ← plugin "yls"
+├── agents/                          ← fichiers .md à plat (pas de sous-dossier :
+│   │                                  la découverte par défaut du plugin ne
+│   │                                  scanne pas les sous-répertoires d'agents/)
+│   ├── cv-analyst.md                ← Pipeline RH
+│   ├── cv-designer.md
+│   ├── cv-recruiter.md
+│   ├── rh-interviewer.md
+│   ├── tech-interviewer.md
+│   ├── debrief-agent.md
+│   ├── cert-intake.md               ← Pipeline Certification
+│   ├── referentiel-loader.md
+│   ├── gap-analyser.md
+│   ├── exam-preparer.md
+│   ├── cert-interviewer.md
+│   └── cert-debrief.md
 ├── skills/
 │   ├── archi-scanner/
 │   │   ├── SKILL.md
@@ -115,6 +121,8 @@ Claude Code lit automatiquement tous les fichiers présents dans `.claude/agents
 │   ├── greenfield-tdd-okf/
 │   │   ├── SKILL.md
 │   │   └── references/
+│   │       ├── mode-coder.md        # déroulé complet du mode coder
+│   │       └── templates-coder/     # 5 templates docs/ du mode coder
 │   ├── presentation-builder/
 │   │   ├── SKILL.md
 │   │   ├── design-system/
@@ -131,9 +139,15 @@ Claude Code lit automatiquement tous les fichiers présents dans `.claude/agents
 │   ├── compile-rules/
 │   │   ├── SKILL.md
 │   │   └── references/
-│   └── vitrine-locale/
+│   ├── vitrine-locale/
+│   │   ├── SKILL.md
+│   │   └── references/
+│   └── send-feedback/
 │       ├── SKILL.md
 │       └── references/
+├── commands/
+│   ├── archi-diagrams.md
+│   └── archi-scanner.md
 └── README.md
 ```
 
@@ -144,85 +158,75 @@ Claude Code lit automatiquement tous les fichiers présents dans `.claude/agents
 ### Prérequis
 
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installé
-- Un projet ouvert dans Claude Code
 
-### Option 1 — Copie manuelle
+### Marketplace de plugin (recommandé)
 
-Copier les fichiers souhaités dans le dossier `.claude/` de ton projet :
+Zéro script, zéro copie de fichiers. Dans Claude Code :
 
-```bash
-# Créer la structure si elle n'existe pas
-mkdir -p mon-projet/.claude/agents mon-projet/.claude/skills
-
-# Copier un agent
-cp agents/[domaine]/nom-agent.md mon-projet/.claude/agents/
-
-# Copier un skill complet
-cp -r skills/nom-pipeline/ mon-projet/.claude/skills/
+```
+/plugin marketplace add YoLaub/skills_stock
+/plugin install yls@yl-solution
 ```
 
-### Option 2 — Sous-module Git
-
-Pour rester synchronisé avec les mises à jour du dépôt :
-
-```bash
-cd mon-projet
-git submodule add https://github.com/YoLaub/skills_stock.git .claude/registry
-```
-
-Puis créer des symlinks vers les fichiers souhaités :
-
-```bash
-ln -s .claude/registry/agents/[domaine]/nom-agent.md .claude/agents/nom-agent.md
-ln -s .claude/registry/skills/nom-pipeline .claude/skills/nom-pipeline
-```
+Tous les agents, skills et commandes du dépôt sont immédiatement actifs, dans
+**n'importe quel projet ouvert dans Claude Code** — pas seulement celui où la commande
+a été tapée. Les skills sont préfixés par le plugin : `/yls:greenfield-tdd-okf`,
+`/yls:skill-architect`, etc. Un `/yls:` seul suffit à voir la liste.
 
 Mettre à jour plus tard :
 
-```bash
-git submodule update --remote
+```
+/plugin marketplace update yl-solution
 ```
 
-### Option 3 — Script curl
+Retirer :
 
-Pour installer rapidement un ensemble d'agents sans cloner le dépôt :
+```
+/plugin uninstall yls
+```
+
+### Développement — plugin en place (pour modifier un skill et voir l'effet tout de suite)
+
+Si tu as cloné ce dépôt et veux éditer un skill directement, sans réinstaller à chaque
+changement : pointe `~/.claude/skills/` vers le clone avec un lien symbolique.
 
 ```bash
-BASE="https://raw.githubusercontent.com/YoLaub/skills_stock/main"
-mkdir -p .claude/agents .claude/skills/nom-pipeline
-
-curl -s "$BASE/agents/[domaine]/nom-agent.md" -o .claude/agents/nom-agent.md
-curl -s "$BASE/skills/nom-pipeline/SKILL.md"  -o .claude/skills/nom-pipeline/SKILL.md
+ln -s /chemin/vers/skills_stock ~/.claude/skills/yl-solution
 ```
+
+Le dossier est chargé en place (`yls@skills-dir`) au lieu d'être copié — chaque édition
+du fichier source est immédiatement active, `/reload-plugins` recharge en cours de
+session. Alternative sans toucher `~/.claude/skills` : `claude --plugin-dir <clone>`
+pour une session isolée.
+
+### Copie manuelle (cas particulier : un seul skill ou agent, sans plugin)
+
+```bash
+mkdir -p mon-projet/.claude/agents mon-projet/.claude/skills
+cp agents/nom-agent.md mon-projet/.claude/agents/
+cp -r skills/nom-pipeline/ mon-projet/.claude/skills/
+```
+
+À adapter ensuite : les skills de ce dépôt utilisent des contrats partagés
+(`skills/_shared/`, `agents/_shared/` s'il y en a) résolus par chemin relatif — extraire
+un seul dossier peut casser cette résolution. Vérifier ses éventuelles dépendances
+avant de l'isoler.
 
 ---
 
 ## Intégration dans un projet
 
-Une fois les fichiers copiés dans `.claude/`, la structure cible est :
-
-```
-mon-projet/
-├── .claude/
-│   ├── agents/
-│   │   ├── nom-agent-1.md
-│   │   └── nom-agent-2.md
-│   ├── skills/
-│   │   └── nom-pipeline/
-│   │       └── SKILL.md
-│   └── README.md          ← documenter les agents actifs dans le projet
-├── src/
-└── ...
-```
-
-Ouvrir Claude Code dans `mon-projet/` — les agents et skills sont immédiatement actifs.
-Les déclencher naturellement dans le chat :
+Une fois le plugin installé, ses skills et agents sont actifs dans toute session
+Claude Code. Les déclencher naturellement dans le chat :
 
 ```
 Lance le pipeline [nom]
 ```
 ```
 Utilise l'agent [nom-agent] pour [tâche]
+```
+```
+/yls:nom-du-skill
 ```
 
 ---
@@ -235,36 +239,19 @@ Les agents de ce dépôt sont **génériques par défaut**. Ils contiennent des 
 [NOM_ENTREPRISE], [STACK_PRINCIPALE], [SECTEUR], [LANGUE_CIBLE]
 ```
 
-### Adapter via Claude Code (recommandé)
-
-Une fois les fichiers dans `.claude/`, demander à Claude Code de les modifier directement :
-
-```
-Adapte l'agent [nom].md pour notre contexte :
-- Secteur : [secteur]
-- Stack : [stack]
-- Langue : [langue]
-```
-
-Claude Code édite le fichier sur disque. La modification est active immédiatement dans la session.
-
-### Adapter manuellement dans l'éditeur
-
-Ouvrir le fichier `.claude/agents/nom-agent.md` dans VSCode, Cursor ou tout éditeur.
-Les zones à personnaliser sont regroupées dans les sections :
-
-- `## Inputs attendus` — adapter les champs au projet
-- `## Processus` — ajouter, retirer ou réordonner des étapes
-- `## Output` — changer les chemins ou formats de sortie
-- `## Passage à l'étape suivante` — recâbler l'ordre du pipeline si besoin
-
-Sauvegarder suffit — Claude Code relit les fichiers à chaque session.
+Un skill installé via le plugin marketplace vit dans le cache des plugins, pas dans le
+projet : pour le personnaliser durablement, éditer le clone du dépôt (mode
+développement ci-dessus) plutôt que le fichier installé, qui sera écrasé au prochain
+`/plugin marketplace update`. Pour une personnalisation ponctuelle propre à un seul
+projet, copier le fichier concerné dans `.claude/skills/` de ce projet (voir "Copie
+manuelle" ci-dessus) — la copie locale prend le pas sur le plugin.
 
 ### Bonnes pratiques
 
-- Committer les personnalisations avant une mise à jour depuis le dépôt (une mise à jour écrase les fichiers locaux)
-- Documenter les changements dans `.claude/README.md` pour l'équipe
+- Personnaliser dans le clone (mode développement), jamais dans le cache des plugins
+- Documenter les changements notables dans ce README pour les autres utilisateurs
 - Tester un agent seul avant de lancer un pipeline complet
+- Un skill qui a mal réagi ou qu'il manque quelque chose → `/yls:send-feedback`
 
 ---
 

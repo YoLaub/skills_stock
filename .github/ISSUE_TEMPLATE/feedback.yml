@@ -1,0 +1,55 @@
+name: Retour sur un skill
+description: Un skill s'est mal comporté, il manque quelque chose, ou une idée a émergé
+labels: ["feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de faire remonter ça.
+
+        Tu peux remplir ce formulaire à la main, ou laisser les skills le faire pour
+        toi : lance `/yls:send-feedback` dans la session où c'est arrivé, il remplira
+        ça, anonymisera ce qui doit l'être, et te montrera le texte exact avant toute
+        publication.
+
+        Ce tracker est public — merci de ne pas coller de chemins absolus, de noms de
+        client/projet, d'URLs internes, ou de quoi que ce soit qui ressemble à une clé.
+
+  - type: input
+    id: skill
+    attributes:
+      label: Quel skill
+      description: Le skill concerné — ou `yls` si c'est à propos du plugin dans son ensemble.
+      placeholder: greenfield-tdd-okf
+    validations:
+      required: true
+
+  - type: textarea
+    id: verbatim
+    attributes:
+      label: Ton retour, dans tes propres mots
+      description: >
+        Dis-le comme tu le dirais. Brut, c'est très bien — la formulation porte une
+        nuance qu'un résumé propre perd, et cette nuance est en général la partie utile.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexte
+      description: >
+        Optionnel. Attendu versus obtenu, le chemin le plus court pour reproduire,
+        l'endroit où ça a mal tourné. À sauter entièrement si c'est une idée plutôt
+        qu'un bug.
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: Version et environnement
+      description: "Sortie de `claude plugin list` pour l'entrée `yls@…`, plus l'OS."
+      placeholder: yls@yl-solution 0.1.0 — macOS 15, Claude Code 2.x
+    validations:
+      required: false
