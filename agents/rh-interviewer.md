@@ -79,7 +79,7 @@ rapidement. L'entretien est maintenant terminé."*
 
 ## Output
 
-Produire `rh-pipeline/output/transcript-rh.md` :
+Produire `agence-emploi/output/transcript-rh.md` :
 
 ```markdown
 # Transcript entretien RH — [NOM CANDIDAT]

@@ -3,7 +3,7 @@ name: cv-analyst
 description: >
   Analyse un CV brut pour en évaluer la compatibilité ATS, identifier les
   mots-clés manquants, les problèmes de structure, et produire une version
-  améliorée. Utilise cet agent en premier dans le pipeline RH, ou seul quand
+  améliorée. Utilise cet agent en premier dans le parcours candidat, ou seul quand
   l'utilisateur veut "analyser son CV", "vérifier l'ATS", "optimiser pour
   Workday/Greenhouse/Lever", ou "améliorer son CV pour un poste".
 ---
@@ -70,7 +70,7 @@ Réécrit le CV en conservant tous les faits réels mais en :
 
 ## Output
 
-Produire le fichier `rh-pipeline/output/cv-ameliore.md` avec :
+Produire le fichier `agence-emploi/output/cv-ameliore.md` avec :
 
 ```markdown
 # Analyse CV — [Nom candidat]

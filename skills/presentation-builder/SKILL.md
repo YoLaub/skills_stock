@@ -179,7 +179,11 @@ Exemple de référence d'un deck conforme : `references/sample-deck/sample-deck.
 ### Étape 7 — Porte de contrôle (BLOQUANT)
 
 Dispatcher un sous-agent frais dont les instructions **sont** le contenu intégral de
-`references/critique-prompt.md`. Passer en contexte :
+`references/critique-prompt.md`, avec `model: opus` (paramètre `model` de l'outil
+Agent) — l'audit est exhaustif et tolérance zéro sur 8 règles dures + inspection
+visuelle ; un juge plus faible que ce qu'il évalue rate des violations (pattern
+LLM-judge classique, même raisonnement que la porte de contrôle de `skill-bench`).
+Passer en contexte :
 - `<deck>` : chemin absolu vers le fichier `.md` du deck
 - `<theme>` : chemin absolu vers `theme.css`
 - Contexte d'audience (public non-technique ?)

@@ -1,0 +1,79 @@
+{
+  "_comment": "Template eval set pour skill-bench. Même schéma que skills/skill-optimizer/evals/evals-template.json, avec le champ persona en plus — un scénario réussi ici est directement réutilisable comme baseline (iteration-0) par skill-optimizer en cas d'échec.",
+  "cible": "nom-du-skill-ou-agent-testé",
+  "type": "agent | skill-orchestrateur",
+  "fichier_cible": "chemin/vers/agent.md ou SKILL.md",
+  "consommateur_aval": "nom-de-l-agent-suivant ou null si cible terminale",
+  "created_at": "YYYY-MM-DD",
+  "evals": [
+    {
+      "id": 1,
+      "type": "nominal",
+      "description": "Cas principal — flux standard",
+      "persona": "Description courte et cohérente de qui répond aux questions fermées de la cible pendant son exécution",
+      "prompt": "Prompt tel que le persona le taperait réellement",
+      "rubric": {
+        "criteres": [
+          {
+            "nom": "Conformité au contrat déclaré",
+            "description": "Le livrable produit correspond exactement à ce que la section Output/Fichiers de sortie de la cible promet",
+            "poids": 3
+          },
+          {
+            "nom": "Précision",
+            "description": "Les informations sont exactes et non hallucinées",
+            "poids": 2
+          },
+          {
+            "nom": "Règles bloquantes respectées",
+            "description": "Toute règle explicitement bloquante du fichier cible (validation avant rédaction, non-invention de données...) est respectée",
+            "poids": 3
+          }
+        ],
+        "score_max": 8,
+        "seuil_succes": 6
+      }
+    },
+    {
+      "id": 2,
+      "type": "limite",
+      "description": "Cas limite — entrée ambiguë ou incomplète fournie par le persona",
+      "persona": "Description du persona pour ce scénario — peut différer du nominal",
+      "prompt": "Prompt avec information manquante ou ambiguë",
+      "rubric": {
+        "criteres": [
+          {
+            "nom": "Gestion de l'ambiguïté",
+            "description": "La cible demande une clarification ou fait un choix explicite justifié, plutôt que de deviner en silence",
+            "poids": 3
+          },
+          {
+            "nom": "Ne pas halluciner",
+            "description": "La cible ne comble pas les lacunes avec des faits inventés",
+            "poids": 3
+          }
+        ],
+        "score_max": 6,
+        "seuil_succes": 5
+      }
+    },
+    {
+      "id": 3,
+      "type": "aval",
+      "description": "Le livrable produit doit être directement exploitable par le consommateur identifié (si applicable — omettre ce scénario si consommateur_aval est null)",
+      "persona": "Identique au scénario nominal",
+      "prompt": "Identique au scénario nominal",
+      "rubric": {
+        "criteres": [
+          {
+            "nom": "Exploitable par le consommateur aval",
+            "description": "Respecte le format attendu par les Inputs attendus du consommateur_aval, sans reformulation nécessaire",
+            "poids": 4
+          }
+        ],
+        "score_max": 4,
+        "seuil_succes": 3
+      }
+    }
+  ]
+}

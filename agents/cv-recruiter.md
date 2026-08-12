@@ -4,7 +4,7 @@ description: >
   Rédige l'email de candidature professionnel et génère le rapport de
   soumission ATS. Utilise cet agent quand l'utilisateur veut "envoyer le CV
   au recruteur", "soumettre la candidature", "préparer l'email de candidature",
-  ou "vérifier la compatibilité ATS finale". Troisième étape du pipeline RH.
+  ou "vérifier la compatibilité ATS finale". Troisième étape du parcours candidat.
 ---
 
 # Agent : cv-recruiter
@@ -87,7 +87,7 @@ scan.
 
 ## Output
 
-Produire dans `rh-pipeline/output/` :
+Produire dans `agence-emploi/output/` :
 - `email-recruteur.md` : l'email complet prêt à copier-coller
 - `rapport-ats.md` : le rapport de soumission ATS
 

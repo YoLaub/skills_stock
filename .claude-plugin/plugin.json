@@ -1,6 +1,6 @@
 {
   "name": "yls",
-  "description": "Pipelines RH et Certification (skills orchestrateurs + agents), greenfield-tdd-okf (mode viber/coder), skill-architect, archi-scanner/archi-diagrams, presentation-builder, brain-builder, create-mcp, init-projet, compile-rules, vitrine-locale, send-feedback.",
+  "description": "Agence Emploi (candidat/RH), pipeline Certification et pipeline Cours (skills orchestrateurs + agents), greenfield-tdd-okf (mode viber/coder), skill-architect, skill-optimizer, skill-bench, archi-scanner/archi-diagrams, presentation-builder, brain-builder, create-mcp, init-projet, compile-rules, vitrine-locale, send-feedback.",
   "version": "0.1.0",
   "author": {
     "name": "YoLaub"

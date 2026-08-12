@@ -29,7 +29,10 @@ attend bien un sous-dossier par skill (`skills/[nom]/SKILL.md`) — l'asymétrie
 réelle, pas une erreur de manip.
 
 **Convention de nommage :**
-- Le dossier skill porte le nom du pipeline avec suffixe `-pipeline` (`rh-pipeline`, `cert-pipeline`…)
+- Le dossier skill porte le nom du pipeline avec suffixe `-pipeline` (`cert-pipeline`…),
+  sauf quand le skill a plusieurs voix/publics distincts (ex. `agence-emploi` : voix
+  candidat + voix RH) — dans ce cas le nom décrit le domaine, pas un pipeline linéaire,
+  et chaque voix a sa propre référence dans `skills/[nom]/references/parcours-*.md`.
 - Les agents sont nommés en kebab-case, préfixés par le domaine si nécessaire pour
   éviter une collision de nom entre pipelines (`cert-intake`, `cv-analyst`…) —
   puisqu'ils sont désormais tous au même niveau, le préfixe est ce qui évite les
@@ -79,8 +82,9 @@ composant (c'est exactement ce que fait un fichier mal placé).
 
 | Pipeline | Agents | Skill |
 |----------|--------|-------|
-| RH Pipeline | `cv-analyst`, `cv-designer`, `cv-recruiter`, `rh-interviewer`, `tech-interviewer`, `debrief-agent` | `rh-pipeline` |
+| Agence Emploi | `cv-analyst`, `cv-designer`, `cv-recruiter`, `rh-interviewer`, `tech-interviewer`, `debrief-agent`, `job-search-agent` (parcours candidat) ; `rh-needs-analyst`, `job-posting-writer`, `candidate-screener`, `interview-designer` (parcours RH) | `agence-emploi` |
 | Cert Pipeline | `cert-intake`, `referentiel-loader`, `gap-analyser`, `exam-preparer`, `cert-interviewer`, `cert-debrief` | `cert-pipeline` |
+| Cours Pipeline | aucun agent dédié — skill à phases séquentielles (comme `greenfield-tdd-okf`/`vitrine-locale`), invoque `presentation-builder` en Phase 6 | `cours-pipeline` |
 
 ---
 

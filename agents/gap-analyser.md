@@ -6,6 +6,7 @@ description: >
   compétences maîtrisées, partielles et manquantes. Déclenche en troisième
   étape du pipeline cert, ou quand l'utilisateur dit "analyse mes écarts",
   "quelles compétences me manquent", "où j'en suis par rapport au référentiel".
+model: opus
 ---
 
 # Agent : gap-analyser

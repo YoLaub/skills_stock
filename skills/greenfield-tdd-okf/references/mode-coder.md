@@ -5,8 +5,11 @@ investi en phase 1 se rembourse en épargnant des allers-retours de cadrage pend
 développement. Éprouvé sur Survival AI (2026-08) : les 5 documents ci-dessous en sont
 issus, généralisés en templates.
 
-Référence dédiée : `references/templates-coder/` — un fichier par document de `docs/`,
-à lire un par un au moment de rédiger le document correspondant, pas tous d'un coup.
+Références dédiées :
+- `references/templates-coder/` — un fichier par document de `docs/`, à lire un par un
+  au moment de rédiger le document correspondant, pas tous d'un coup.
+- `references/mode-coder-execution.md` — protocole d'exécution de la Phase 3
+  (superviseur/sous-agents), à lire entièrement dès que la Phase 2 est terminée.
 
 ## Phase 1 — Recherche & cadrage documenté
 
@@ -41,29 +44,16 @@ Référence dédiée : `references/templates-coder/` — un fichier par document
    milestones, issues sont visibles par toute l'équipe) : présenter le plan de création,
    attendre validation, puis exécuter.
 
-## Phase 3 — Chaque issue (GitHub Flow, TDD)
+## Phase 3 — Exécution des issues (GitHub Flow, TDD, superviseur/sous-agents)
 
-Le TDD est identique au mode viber (phase 3) ; ce qui change est le modèle de branche :
-GitHub Flow (branches courtes depuis `main`, revue par PR) au lieu de git-flow
-(branche `dev` + merge `--no-ff` local).
+Le TDD est identique au mode viber (phase 3) ; ce qui change est le modèle de branche
+(GitHub Flow, PR par issue) **et** le mode d'exécution : dès que plusieurs issues sont
+non bloquées en même temps, le thread principal devient un superviseur qui délègue
+chaque issue à un sous-agent dédié plutôt que de les dérouler une par une.
 
-1. Branche dédiée depuis `main`, nommée `issue-<numéro>-<slug>`. Jamais de commit direct
-   sur `main`.
-2. Tests d'abord sur la **logique pure** (calculs, machines d'états, dédoublonnage,
-   signatures) placée dans `services/` ; UI/routes = orchestration mince. Toute logique
-   est un service unique consommé par l'UI ET par les interfaces machine (tools MCP,
-   API) — jamais de duplication.
-3. Suite verte → build → **E2E réel** (curl sur l'API/MCP, vrai appel externe si gratuit).
-4. Ouvrir une Pull Request référençant l'issue (`Closes #<numéro>`), attendre que la CI
-   soit verte, demander confirmation à l'utilisateur avant le merge (action visible par
-   l'équipe).
-5. Fiche OKF `docs/index/<feature>.md` au format `references/okf-fiche-template.md`
-   (skill parent). Dater les décisions.
-6. Ajouter les pièges rencontrés à `retro.md` ; si générique, aussi dans
-   `references/pieges.md` du skill parent.
-7. Merge de la PR (squash ou merge selon la convention du repo, à demander une fois en
-   phase 2 et consigner dans CLAUDE.md) → l'issue se ferme automatiquement → passer à
-   l'issue non bloquée suivante.
+Déroulé complet (calcul du lot, délégation, worktrees, critères de fusion) :
+`references/mode-coder-execution.md` — à lire entièrement avant la première issue de
+la Phase 3.
 
 ## Phase 4 — Clôture
 
@@ -76,5 +66,8 @@ GitHub Flow (branches courtes depuis `main`, revue par PR) au lieu de git-flow
 
 - Les 5 templates de documents → `references/templates-coder/*.md` (append-only par
   variante si un domaine a besoin d'une section en plus ; ne pas réécrire l'existant).
+- Le protocole d'exécution (calcul des lots, prompts des sous-agents, worktrees) →
+  `references/mode-coder-execution.md` ; c'est ce fichier qui évolue si le mode de
+  délégation change, pas celui-ci.
 - Ce fichier ne bouge que si le déroulé du mode coder change (nouvelle phase, nouvel
   ordre) — pas pour un ajustement de formulation de question.

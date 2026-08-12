@@ -1,6 +1,6 @@
 {
   "name": "yl-solution",
-  "description": "Yoann's Claude Code skills: pipelines RH/Certification multi-agents, greenfield TDD + OKF (mode viber ou mode coder), architecture de skills, scanner/diagrammes d'archi, présentation Marp, brain builder, et plus.",
+  "description": "Yoann's Claude Code skills: agence emploi (candidat/RH), pipeline certification et pipeline cours multi-agents, greenfield TDD + OKF (mode viber ou mode coder), architecture de skills, scanner/diagrammes d'archi, présentation Marp, brain builder, et plus.",
   "owner": {
     "name": "YoLaub"
   },
@@ -8,7 +8,7 @@
     {
       "name": "yls",
       "source": "./",
-      "description": "Pipelines RH et Certification (skills orchestrateurs + agents), greenfield-tdd-okf (mode viber/coder), skill-architect, archi-scanner/archi-diagrams, presentation-builder, brain-builder, create-mcp, init-projet, compile-rules, vitrine-locale, send-feedback."
+      "description": "Agence Emploi (candidat/RH), pipeline Certification et pipeline Cours (skills orchestrateurs + agents), greenfield-tdd-okf (mode viber/coder), skill-architect, skill-optimizer, skill-bench, archi-scanner/archi-diagrams, presentation-builder, brain-builder, create-mcp, init-projet, compile-rules, vitrine-locale, send-feedback."
     }
   ]
 }

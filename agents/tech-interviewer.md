@@ -98,7 +98,7 @@ techniques ?"*
 
 ## Output
 
-Produire `rh-pipeline/output/transcript-tech.md` :
+Produire `agence-emploi/output/transcript-tech.md` :
 
 ```markdown
 # Transcript entretien technique — [NOM CANDIDAT]

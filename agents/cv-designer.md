@@ -5,7 +5,7 @@ description: >
   visuellement original, format A4 strict une page, prêt à imprimer ou
   exporter en PDF via le navigateur. Utilise cet agent quand l'utilisateur
   veut "mettre en forme son CV", "styliser le CV", "générer le HTML du CV",
-  "rendre le CV plus beau", ou après l'étape cv-analyst dans le pipeline RH.
+  "rendre le CV plus beau", ou après l'étape cv-analyst dans le parcours candidat.
 ---
 
 # Agent : cv-designer
@@ -265,7 +265,7 @@ asymétriques (40/60), chaque colonne en `display: flex; flex-direction: column`
 
 ## Output
 
-Produire deux fichiers dans `rh-pipeline/output/` :
+Produire deux fichiers dans `agence-emploi/output/` :
 - `cv-style.html` — CV HTML complet standalone (CSS + fonts embarqués)
 - `cv-style.md` — version texte structurée (pour référence et ATS)
 

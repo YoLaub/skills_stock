@@ -20,10 +20,16 @@
 │       ├── cert-interviewer.md  # Agent 5 — Simulation entretien jury
 │       └── cert-debrief.md      # Agent 6 — Bilan + probabilité de validation
 └── skills/
-    ├── rh-pipeline/
-    │   └── SKILL.md             # Orchestrateur pipeline RH
+    ├── agence-emploi/
+    │   ├── SKILL.md             # Orchestrateur, choix voix candidat/RH
+    │   └── references/
+    │       ├── parcours-candidat.md
+    │       └── parcours-rh.md
     ├── cert-pipeline/
     │   └── SKILL.md             # Orchestrateur pipeline Certification
+    ├── cours-pipeline/
+    │   ├── SKILL.md             # Orchestrateur pipeline Cours (utilise presentation-builder)
+    │   └── references/
     ├── archi-scanner/
     │   ├── SKILL.md             # Scanner d'architecture progressif (5 phases)
     │   └── references/
@@ -37,16 +43,23 @@
 
 ---
 
-## Pipeline RH
+## Agence Emploi
+
+Deux voix, choisies en Phase 0 du skill : candidat ou RH.
 
 ### Usage rapide
 ```
-Lance le pipeline RH complet :
+Lance l'agence emploi, côté candidat :
 - Poste visé : Développeur fullstack
 - CV : [coller le CV ici]
 ```
+```
+Lance l'agence emploi, côté RH, pour recruter un [poste].
+```
 
-### Outputs — `rh-pipeline/output/`
+### Outputs — `agence-emploi/output/`
+
+Parcours candidat :
 
 | Fichier | Produit par |
 |---------|------------|
@@ -57,6 +70,16 @@ Lance le pipeline RH complet :
 | `transcript-rh.md` | rh-interviewer |
 | `transcript-tech.md` | tech-interviewer |
 | `bilan-final.md` | debrief-agent |
+| `offres-emploi.md` | job-search-agent |
+
+Parcours RH :
+
+| Fichier | Produit par |
+|---------|------------|
+| `besoin-rh.md` | rh-needs-analyst |
+| `annonce-poste.md` | job-posting-writer |
+| `screening-candidats.md` | candidate-screener |
+| `grille-entretien.md` | interview-designer |
 
 ---
 
@@ -86,6 +109,31 @@ Lance le pipeline certification.
 | `questions-probables.md` | exam-preparer |
 | `transcript-jury.md` | cert-interviewer |
 | `bilan-final.md` | cert-debrief |
+
+---
+
+## Cours Pipeline
+
+Compétences visées définies avant tout contenu ; utilise `presentation-builder` en
+Phase 6 pour le support projeté.
+
+### Usage rapide
+```
+Prépare un cours sur [thème] pour [public], durée [X].
+```
+
+### Outputs — `cours-pipeline/output/`
+
+| Fichier | Produit en |
+|---------|------------|
+| `competences-visees.md` | Phase 2 |
+| `contenu-bases.md` | Phase 3 |
+| `activite-ludique.md` | Phase 4 |
+| `evaluation.md` | Phase 5 |
+| `fiche-seance.md` | Phase 7 |
+
+Le deck lui-même (Phase 6) suit la structure de travail de `presentation-builder`,
+référencée depuis `fiche-seance.md`.
 
 ---
 

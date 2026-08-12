@@ -26,10 +26,12 @@ Un **skill** décrit un pipeline ou un processus complexe. Un **agent** est un s
 |-------|-------------|
 | `archi-scanner` | Scanner d'architecture progressif et générique — indexe un codebase par étapes (stack, routes, controllers, services, entités) sans saturer le contexte, et produit un INDEX réutilisable. Prérequis d'`archi-diagrams`. |
 | `archi-diagrams` | Génère des diagrammes Mermaid à la demande depuis l'INDEX produit par `archi-scanner` — classes, architecture, MCD, séquence, cas d'utilisation. |
-| `rh-pipeline` | Pipeline RH complet multi-agents pour traiter une candidature de A à Z — analyse CV, mise en forme, email recruteur, entretiens, bilan final. |
+| `agence-emploi` | Mini agence pour l'emploi à deux voix — candidat ou RH, choisies en Phase 0. Côté candidat : analyse CV, mise en forme, email recruteur, entretiens, bilan, recherche d'offres réelles (API France Travail + navigation assistée). Côté RH : cadrage du besoin de recrutement, rédaction d'annonce, analyse comparative de candidats, grille d'entretien. |
 | `cert-pipeline` | Pipeline de préparation à une certification ou titre professionnel — chargement référentiel, analyse des écarts, fiches de révision, simulation jury, bilan. |
+| `cours-pipeline` | Construit une séance de cours à partir d'un thème — compétences visées définies avant le contenu, exploration des bases, application ludique alignée sur ces compétences, vérification des acquis, support de présentation (via `presentation-builder`), fiche de séance récapitulative. |
 | `brain-builder` | Crée et maintient des "cerveaux projets" sous forme de vaults Obsidian structurés (architecture 3 couches : raw / wiki / reports), inspirés de l'approche LLM Wiki. |
 | `skill-optimizer` | Optimise un SKILL.md existant par micro-éditions validées (approche SkillOpt) : baseline → proposition → évaluation → commit ou revert. |
+| `skill-bench` | Banc de test qui évalue un ou plusieurs skills/agents contre leur objectif déclaré, produit un tableau de notation comparatif, et renvoie ceux qui échouent vers `skill-optimizer` — détecte, ne corrige jamais lui-même. |
 | `greenfield-tdd-okf` | Workflow répétable pour démarrer un projet greenfield en TDD avec index OKF, en deux modes choisis en Phase 0 — **viber** (cadrage minimal, direct au bootstrap git-flow) ou **coder** (cadrage documenté en 5 fichiers `docs/`, Epics + Issues GitHub, TDD via GitHub Flow). |
 | `presentation-builder` | Construit une présentation orale (soutenance, pitch, talk, démo) avec modèle assertion-preuve et design system fermé — export Marp en .pptx/PDF, schémas Mermaid et graphiques automatiques, porte de contrôle visuelle avant livraison. |
 | `skill-architect` | Conçoit l'architecture d'un nouveau skill ou refactore la structure d'un skill existant — SOLID transposé aux skills, patterns (Template Method, Facade, Pipeline, Strategy), découpage par vitesse de changement, checklist de revue. |
@@ -39,7 +41,7 @@ Un **skill** décrit un pipeline ou un processus complexe. Un **agent** est un s
 | `compile-rules` | Compile le journal d'erreurs (`bag.ndjson`) en règles projet : regroupement par trigger, scoring, promotion/démotion, régénération du manifeste de routage. Sur demande explicite uniquement, jamais d'écriture sans validation. |
 | `send-feedback` | Envoie un retour sur ces skills en amont, sous forme d'issue GitHub sur `YoLaub/skills_stock` — reprend les mots de l'utilisateur tels quels, propose le contexte technique autour, anonymise avant publication. |
 
-### Agents — Pipeline RH
+### Agents — Agence Emploi (parcours candidat)
 
 | Agent | Description |
 |-------|-------------|
@@ -48,7 +50,17 @@ Un **skill** décrit un pipeline ou un processus complexe. Un **agent** est un s
 | `cv-recruiter` | Rédige l'email de candidature professionnel et génère le rapport de soumission ATS final. |
 | `rh-interviewer` | Simule un entretien de motivation en mode conversationnel — pose les questions, évalue les réponses, enchaîne. |
 | `tech-interviewer` | Simule un entretien technique adapté au profil et à la stack — adapte le niveau et les thèmes détectés dans le CV. |
-| `debrief-agent` | Synthétise toutes les étapes du pipeline RH en un bilan complet avec note, recommandation, points forts et axes d'amélioration. |
+| `debrief-agent` | Synthétise toutes les étapes du parcours candidat en un bilan complet avec note, recommandation, points forts et axes d'amélioration. |
+| `job-search-agent` | Recherche des offres correspondant au profil via l'API France Travail (accès libre) et une navigation assistée sur Indeed/LinkedIn/WTTJ/APEC. |
+
+### Agents — Agence Emploi (parcours RH)
+
+| Agent | Description |
+|-------|-------------|
+| `rh-needs-analyst` | Cadre le besoin de recrutement réel d'une entreprise avant toute annonce ou sélection — compétences indispensables vs souhaitables, séniorité, budget. |
+| `job-posting-writer` | Rédige une annonce de poste cohérente avec le besoin RH cadré en amont. |
+| `candidate-screener` | Analyse et classe un lot de candidatures reçues pour un même poste, avec justification comparative. |
+| `interview-designer` | Construit une grille d'entretien structurée côté recruteur (questions, grille de notation), avec galop d'essai optionnel pour la stress-tester. |
 
 ### Agents — Pipeline Certification
 
@@ -89,12 +101,17 @@ manuelle ni configuration.
 ├── agents/                          ← fichiers .md à plat (pas de sous-dossier :
 │   │                                  la découverte par défaut du plugin ne
 │   │                                  scanne pas les sous-répertoires d'agents/)
-│   ├── cv-analyst.md                ← Pipeline RH
+│   ├── cv-analyst.md                ← Agence Emploi, parcours candidat
 │   ├── cv-designer.md
 │   ├── cv-recruiter.md
 │   ├── rh-interviewer.md
 │   ├── tech-interviewer.md
 │   ├── debrief-agent.md
+│   ├── job-search-agent.md
+│   ├── rh-needs-analyst.md          ← Agence Emploi, parcours RH
+│   ├── job-posting-writer.md
+│   ├── candidate-screener.md
+│   ├── interview-designer.md
 │   ├── cert-intake.md               ← Pipeline Certification
 │   ├── referentiel-loader.md
 │   ├── gap-analyser.md
@@ -108,16 +125,26 @@ manuelle ni configuration.
 │   ├── archi-diagrams/
 │   │   ├── SKILL.md
 │   │   └── references/
-│   ├── rh-pipeline/
-│   │   └── SKILL.md
+│   ├── agence-emploi/
+│   │   ├── SKILL.md
+│   │   └── references/
+│   │       ├── parcours-candidat.md
+│   │       └── parcours-rh.md
 │   ├── cert-pipeline/
 │   │   └── SKILL.md
+│   ├── cours-pipeline/
+│   │   ├── SKILL.md
+│   │   └── references/
 │   ├── brain-builder/
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── scripts/
 │   ├── skill-optimizer/
 │   │   └── SKILL.md
+│   ├── skill-bench/
+│   │   ├── SKILL.md
+│   │   ├── references/
+│   │   └── evals/
 │   ├── greenfield-tdd-okf/
 │   │   ├── SKILL.md
 │   │   └── references/

@@ -1,7 +1,7 @@
 ---
 name: debrief-agent
 description: >
-  Synthétise toutes les étapes du pipeline RH pour produire un bilan candidat
+  Synthétise toutes les étapes du parcours candidat pour produire un bilan
   complet avec note, recommandation, points forts et axes d'amélioration.
   Utilise cet agent en dernier dans le pipeline, ou quand l'utilisateur veut
   "générer le bilan", "obtenir le compte rendu", "voir l'évaluation finale",
@@ -113,7 +113,7 @@ Si non retenu :
 
 ## Output
 
-Produire `rh-pipeline/output/bilan-final.md` :
+Produire `agence-emploi/output/bilan-final.md` :
 
 ```markdown
 # Bilan candidat — [NOM]

@@ -23,6 +23,7 @@ technique (ex. architecture core avant fonctionnalités qui en dépendent).>
 
 ### US-<N>.<M> : <Titre de la User Story>
 * **Description** : En tant que <rôle>, je veux <action> afin de <bénéfice>.
+* **Dépend de** : <aucune | US-<N>.<M>, US-<N>.<M> — issues dont la sienne a besoin pour démarrer>
 * **Critères d'Acceptation** :
   * [ ] <critère vérifiable, testable>
   * [ ] <critère vérifiable, testable>
@@ -37,7 +38,11 @@ technique (ex. architecture core avant fonctionnalités qui en dépendent).>
   déjà deux US.
 - Les critères d'acceptation doivent être vérifiables mécaniquement (test, build, e2e) —
   pas des critères d'opinion (« doit être joli »).
+- **Dépend de** doit lister les vraies dépendances techniques (fichiers/modules
+  partagés, contrat de données), pas l'ordre de préférence — c'est ce champ qui permet
+  à la Phase 3 du mode coder de détecter les issues parallélisables.
 - L'ordre des Epics dans le diagramme = l'ordre d'exécution recommandé en Phase 3 du
   mode coder (dépendances techniques d'abord).
 - Chaque Epic devient un milestone GitHub ; chaque US devient une issue rattachée à ce
-  milestone (Phase 2 du mode coder).
+  milestone (Phase 2 du mode coder) — le champ **Dépend de** devient une ligne
+  `Depends on #<numéro>` dans le corps de l'issue GitHub correspondante.
