@@ -38,8 +38,10 @@ dans son message initial, sauter la question et confirmer le choix en une phrase
 ## Phase 2 — Bootstrap (une branche `feature/bootstrap`)
 - Lire `references/pieges.md` (sections « Génériques » + stack choisie) avant de configurer
   l'outillage.
-- `git init -b main` → branche `dev` → une branche par feature. Merge `--no-ff` vers dev
-  UNIQUEMENT si tests verts + E2E fait. Jamais de commit direct sur main/dev.
+- `git init -b main` → **premier commit sur main avant toute autre branche** (une branche créée
+  avant le premier commit est "unborn" : le prochain commit atterrit sur la branche courante, pas
+  forcément sur main) → branche `dev` depuis main → une branche par feature depuis dev. Merge
+  `--no-ff` vers dev UNIQUEMENT si tests verts + E2E fait. Jamais de commit direct sur main/dev.
 - Monorepo : workspaces dès le départ si un package est partagé (sinon la résolution
   bundler casse) ; docker-compose pour la base ; `.env.example` complet.
 - **Lire les docs embarquées des frameworks récents** (ex. `node_modules/next/dist/docs`)
