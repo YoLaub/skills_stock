@@ -85,30 +85,35 @@ déclaré de la cible (Inputs/Output) et, quand il existe, contre le format atte
 l'étape suivante du pipeline. Seuil de conformité : 70 %.
 
 Depuis le 2026-08-14, `skill-bench` note aussi un **coût observé** (tokens +
-estimation $, tarif mixte — voir `references/tarifs.md` du skill) : les scores
-ci-dessous datent d'avant cet ajout et n'ont pas encore cette colonne — elle
-apparaîtra au prochain passage.
+estimation $, tarif mixte — voir `references/tarifs.md` du skill). Colonne
+`—` = passage antérieur à cet ajout, coût non mesuré pour cette cible.
 
 **Ce tableau est une photo à une date donnée, pas une garantie permanente** — toute
-modification du fichier concerné invalide son score jusqu'au prochain passage.
+modification du fichier concerné invalide son score jusqu'au prochain passage. Le
+coût est une estimation (tarif mixte 70/30 input/output), jamais un montant facturé.
 
-| Cible | Type | Score | Verdict | Testé le |
-|---|---|---|---|---|
-| `rh-needs-analyst` | agent | 87.5 % | ✅ Conforme | 2026-08-13 |
-| `job-posting-writer` | agent | 96.2 % | ✅ Conforme | 2026-08-13 |
-| `candidate-screener` | agent | 96.2 % | ✅ Conforme | 2026-08-13 |
-| `interview-designer` | agent | 97.5 % | ✅ Conforme | 2026-08-13 |
-| `job-search-agent` | agent | 92.5 % | ✅ Conforme | 2026-08-13 |
-| `cours-pipeline` | skill | 92.3 % | ✅ Conforme | 2026-08-13 |
-| `greenfield-tdd-okf` — mode viber (phases 0-4) | skill | 89.7 % | ✅ Conforme | 2026-08-13 |
-| `greenfield-tdd-okf` — mode coder (Phase 1, 5 docs) | skill | 94.7 % | ✅ Conforme | 2026-08-13 |
+| Cible | Type | Score | Coût estimé | Verdict | Testé le |
+|---|---|---|---|---|---|
+| `rh-needs-analyst` | agent | 87.5 % | — | ✅ Conforme | 2026-08-13 |
+| `job-posting-writer` | agent | 96.2 % | — | ✅ Conforme | 2026-08-13 |
+| `candidate-screener` | agent | 96.2 % | — | ✅ Conforme | 2026-08-13 |
+| `interview-designer` | agent | 97.5 % | — | ✅ Conforme | 2026-08-13 |
+| `job-search-agent` | agent | 92.5 % | — | ✅ Conforme | 2026-08-13 |
+| `cours-pipeline` | skill | 92.3 % | — | ✅ Conforme | 2026-08-13 |
+| `greenfield-tdd-okf` — mode viber (phases 0-4) | skill | 81.2 % (13/16) | ~0.73 $ | ✅ Conforme | 2026-08-14 |
+| `greenfield-tdd-okf` — mode coder (Phase 1, 5 docs) | skill | 93.3 % (14/15) | ~0.64 $ | ✅ Conforme | 2026-08-14 |
+
+Le score du mode viber a varié entre les deux passages (89.7 % le 2026-08-13,
+81.2 % le 2026-08-14) — scénarios/personas différents d'un passage à l'autre, pas
+une régression du skill ; voir la note sur la nature d'un banc de test plus bas.
 
 **Audité sans score chiffré** (protocole plutôt que livrable — voir
 `references/mode-coder-execution.md` du skill) :
 `greenfield-tdd-okf` — protocole superviseur/sous-agents (Phase 3, mode coder) :
 dry-run local des commandes `git worktree` conforme, mais l'audit structurel avait
 détecté un trou de bootstrap entre les deux modes ; corrigé le 2026-08-13
-([`31141b9`](commit/31141b9)) — non re-testé par `skill-bench` depuis ce correctif.
+([`31141b9`](commit/31141b9)). Re-testé le 2026-08-14 (dry-run seul, sans scénario
+noté) : coût observé ~0.15 $.
 
 **Non testés bout-en-bout** (audit structurel seulement — le changement portait sur un
 chemin de sortie ou une ligne de frontmatter, pas sur la logique) : `cv-analyst`,
