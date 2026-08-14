@@ -9,6 +9,7 @@ Un **skill** décrit un pipeline ou un processus complexe. Un **agent** est un s
 ## Table des matières
 
 - [Catalogue](#catalogue)
+- [Notation (skill-bench)](#notation-skill-bench)
 - [Concepts](#concepts)
 - [Structure du dépôt](#structure-du-dépôt)
 - [Installation](#installation)
@@ -72,6 +73,47 @@ Un **skill** décrit un pipeline ou un processus complexe. Un **agent** est un s
 | `exam-preparer` | Génère des fiches de révision ciblées et une banque de questions probables basées sur les écarts identifiés. |
 | `cert-interviewer` | Simule un entretien jury en mode conversationnel, adapté au référentiel et aux lacunes détectées. |
 | `cert-debrief` | Synthétise le pipeline certification en un bilan complet avec points forts, axes à consolider et probabilité estimée de validation. |
+
+---
+
+## Notation (skill-bench)
+
+Résultats du dernier passage de [`skill-bench`](skills/skill-bench/SKILL.md) sur les
+skills/agents de ce dépôt : exécution bout-en-bout par un sous-agent qui incarne un
+persona, jugée par un **autre** sous-agent frais (`model: opus`) contre le contrat
+déclaré de la cible (Inputs/Output) et, quand il existe, contre le format attendu par
+l'étape suivante du pipeline. Seuil de conformité : 70 %.
+
+**Ce tableau est une photo à une date donnée, pas une garantie permanente** — toute
+modification du fichier concerné invalide son score jusqu'au prochain passage.
+
+| Cible | Type | Score | Verdict | Testé le |
+|---|---|---|---|---|
+| `rh-needs-analyst` | agent | 87.5 % | ✅ Conforme | 2026-08-13 |
+| `job-posting-writer` | agent | 96.2 % | ✅ Conforme | 2026-08-13 |
+| `candidate-screener` | agent | 96.2 % | ✅ Conforme | 2026-08-13 |
+| `interview-designer` | agent | 97.5 % | ✅ Conforme | 2026-08-13 |
+| `job-search-agent` | agent | 92.5 % | ✅ Conforme | 2026-08-13 |
+| `cours-pipeline` | skill | 92.3 % | ✅ Conforme | 2026-08-13 |
+| `greenfield-tdd-okf` — mode viber (phases 0-4) | skill | 89.7 % | ✅ Conforme | 2026-08-13 |
+| `greenfield-tdd-okf` — mode coder (Phase 1, 5 docs) | skill | 94.7 % | ✅ Conforme | 2026-08-13 |
+
+**Audité sans score chiffré** (protocole plutôt que livrable — voir
+`references/mode-coder-execution.md` du skill) :
+`greenfield-tdd-okf` — protocole superviseur/sous-agents (Phase 3, mode coder) :
+dry-run local des commandes `git worktree` conforme, mais l'audit structurel avait
+détecté un trou de bootstrap entre les deux modes ; corrigé le 2026-08-13
+([`31141b9`](commit/31141b9)) — non re-testé par `skill-bench` depuis ce correctif.
+
+**Non testés bout-en-bout** (audit structurel seulement — le changement portait sur un
+chemin de sortie ou une ligne de frontmatter, pas sur la logique) : `cv-analyst`,
+`cv-designer`, `cv-recruiter`, `rh-interviewer`, `tech-interviewer`, `debrief-agent`,
+`gap-analyser`, `presentation-builder`.
+
+**Hors périmètre du banc pour l'instant** : tout le reste du catalogue (jamais passé au
+banc) ; le mode coder de `greenfield-tdd-okf` au-delà de la Phase 1 (nécessite de
+vraies ressources GitHub) ; `skill-bench` et `skill-optimizer` eux-mêmes (se tester
+soi-même pose un problème d'angle mort, non résolu).
 
 ---
 
