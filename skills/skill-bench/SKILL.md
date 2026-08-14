@@ -21,9 +21,16 @@ cible échoue, `skill-bench` produit un `evals.json` compatible avec
 (`skill-optimizer` a ses propres portes de validation humaine, ne pas les
 court-circuiter).
 
-Référence : `references/rubric-guide.md` — comment construire un rubric qui
-juge le vrai objectif de la cible plutôt qu'un style générique. À lire en
-Phase 2.
+Un skill a aussi un coût d'utilisation (tokens, donc $) — pas seulement une
+note. `skill-bench` le quantifie en Phase 5bis à partir des stats d'usage déjà
+présentes dans chaque notification de sous-agent, sans appel ni calcul
+supplémentaire.
+
+Références :
+- `references/rubric-guide.md` — comment construire un rubric qui juge le
+  vrai objectif de la cible plutôt qu'un style générique. À lire en Phase 2.
+- `references/tarifs.md` — tarifs modèles et méthode d'estimation du coût.
+  À lire en Phase 5bis.
 
 ## Phase 0 — Sélection des cibles
 
@@ -78,7 +85,12 @@ explicite au sous-agent : incarner le persona pour toute question fermée que
 la cible poserait, jusqu'à produire le(s) livrable(s) déclaré(s) — jamais
 s'arrêter en attente d'un humain réel.
 
-Sauvegarder la sortie brute dans `skill-bench/runs/<cible>/eval-<id>/`.
+Sauvegarder la sortie brute dans `skill-bench/runs/<cible>/eval-<id>/`, ainsi
+que les stats d'usage renvoyées par la notification de fin d'agent
+(`subagent_tokens`, `tool_uses`, `duration_ms`) dans
+`skill-bench/runs/<cible>/eval-<id>/usage-execution.json` — c'est la donnée
+brute et gratuite (déjà présente dans chaque notification, rien à calculer)
+qui alimente le coût observé en Phase 5bis.
 
 ## Phase 4 — Jugement (sous-agent frais, distinct de l'exécution)
 
@@ -94,7 +106,10 @@ n'y justifie pas le surcoût systématique.
 
 Il remplit `skill-bench/runs/<cible>/eval-<id>/scores-eval-<id>.json`, au
 format exact attendu par `skill-optimizer` (`score_obtenu` par critère avec
-justification, `score_max`, `seuil_succes`).
+justification, `score_max`, `seuil_succes`). Même capture d'usage qu'en
+Phase 3, sauvegardée dans `usage-jugement.json` du même dossier — le coût du
+jugement fait partie du coût total de la cible, pas seulement celui de
+l'exécution.
 
 ## Phase 5 — Agrégation
 
@@ -102,19 +117,54 @@ Réutiliser tel quel `skills/skill-optimizer/scripts/score_eval.py --aggregate
 skill-bench/runs/<cible>/` pour chaque cible (ne pas réécrire cette logique).
 Produit `aggregate.json` par cible avec `pct_global`, `passed`, `failed`.
 
+## Phase 5bis — Coût observé
+
+Un skill a un coût d'utilisation, pas seulement une note de qualité — cette
+phase le quantifie pour repérer, en plus des cibles à corriger, celles qui
+coûtent cher à faire tourner (candidates à un futur passage
+`skill-optimizer` orienté compacité, ou à un override de modèle plus léger —
+voir `TODO-model-override.md` du skill concerné s'il existe).
+
+Pour chaque cible : sommer les `subagent_tokens` de tous les
+`usage-execution.json` et `usage-jugement.json` de ses scénarios (Phase 3 +
+Phase 4). Consulter `references/tarifs.md` pour le tarif mixte par modèle
+(exécution = modèle par défaut de la session, jugement = `claude-opus-5`) et
+calculer un coût estimé. Sauvegarder dans
+`skill-bench/runs/<cible>/couts.json` :
+
+```json
+{
+  "tokens_execution": 0,
+  "tokens_jugement": 0,
+  "tokens_total": 0,
+  "cout_estime_usd": 0.0
+}
+```
+
+**C'est une estimation** (tarif mixte, pas la vraie répartition
+input/output — voir `references/tarifs.md`) — ne jamais la présenter comme
+un coût facturé.
+
 ## Phase 6 — Tableau de notation
 
 Compiler un tableau unique, toutes cibles confondues :
 
-| Cible | Type | Scénarios passés | Score global | Verdict |
-|---|---|---|---|---|
-| `cv-analyst` | agent | 2/3 | 74% | À corriger |
-| `job-posting-writer` | agent | 3/3 | 91% | Conforme |
-| ... | | | | |
+| Cible | Type | Scénarios passés | Score global | Tokens observés | Coût estimé | Verdict |
+|---|---|---|---|---|---|---|
+| `cv-analyst` | agent | 2/3 | 74% | 42 000 | ~0.28 $ | À corriger |
+| `job-posting-writer` | agent | 3/3 | 91% | 18 500 | ~0.12 $ | Conforme |
+| ... | | | | | | |
 
 Verdict `Conforme` si `pct_global` ≥ 70 (seuil déjà utilisé par défaut dans
 `score_eval.py` — cohérence avec `skill-optimizer`), sinon `À corriger`.
-Présenter le tableau à l'utilisateur.
+Préciser en note sous le tableau : « Coût estimé, pas facturé — tarif mixte
+70/30 input/output, voir `references/tarifs.md` ». Présenter le tableau à
+l'utilisateur.
+
+Une cible bien notée mais chère (score ≥ 70 et coût nettement au-dessus des
+autres cibles du même type) est un signal différent d'une cible mal notée —
+ne pas la classer `À corriger` pour ça seul (Phase 7 reste pilotée par le
+score), mais le signaler explicitement dans le résumé remis à l'utilisateur.
 
 ## Phase 7 — Retour à l'usine
 
@@ -137,9 +187,12 @@ skill-bench/
 │   └── <cible>-evals.json
 ├── runs/
 │   └── <cible>/
-│       └── eval-<id>/
-│           ├── livrable produit
-│           └── scores-eval-<id>.json
+│       ├── eval-<id>/
+│       │   ├── livrable produit
+│       │   ├── scores-eval-<id>.json
+│       │   ├── usage-execution.json
+│       │   └── usage-jugement.json
+│       └── couts.json
 └── tableau-notation.md
 ```
 

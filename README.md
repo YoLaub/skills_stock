@@ -32,7 +32,7 @@ Un **skill** décrit un pipeline ou un processus complexe. Un **agent** est un s
 | `cours-pipeline` | Construit une séance de cours à partir d'un thème — compétences visées définies avant le contenu, exploration des bases, application ludique alignée sur ces compétences, vérification des acquis, support de présentation (via `presentation-builder`), fiche de séance récapitulative. |
 | `brain-builder` | Crée et maintient des "cerveaux projets" sous forme de vaults Obsidian structurés (architecture 3 couches : raw / wiki / reports), inspirés de l'approche LLM Wiki. |
 | `skill-optimizer` | Optimise un SKILL.md existant par micro-éditions validées (approche SkillOpt) : baseline → proposition → évaluation → commit ou revert. |
-| `skill-bench` | Banc de test qui évalue un ou plusieurs skills/agents contre leur objectif déclaré, produit un tableau de notation comparatif, et renvoie ceux qui échouent vers `skill-optimizer` — détecte, ne corrige jamais lui-même. |
+| `skill-bench` | Banc de test qui évalue un ou plusieurs skills/agents contre leur objectif déclaré, produit un tableau de notation comparatif (score **et** coût estimé en tokens/$), et renvoie ceux qui échouent vers `skill-optimizer` — détecte, ne corrige jamais lui-même. |
 | `greenfield-tdd-okf` | Workflow répétable pour démarrer un projet greenfield en TDD avec index OKF, en deux modes choisis en Phase 0 — **viber** (cadrage minimal, direct au bootstrap git-flow) ou **coder** (cadrage documenté en 5 fichiers `docs/`, Epics + Issues GitHub, TDD via GitHub Flow). |
 | `presentation-builder` | Construit une présentation orale (soutenance, pitch, talk, démo) avec modèle assertion-preuve et design system fermé — export Marp en .pptx/PDF, schémas Mermaid et graphiques automatiques, porte de contrôle visuelle avant livraison. |
 | `skill-architect` | Conçoit l'architecture d'un nouveau skill ou refactore la structure d'un skill existant — SOLID transposé aux skills, patterns (Template Method, Facade, Pipeline, Strategy), découpage par vitesse de changement, checklist de revue. |
@@ -83,6 +83,11 @@ skills/agents de ce dépôt : exécution bout-en-bout par un sous-agent qui inca
 persona, jugée par un **autre** sous-agent frais (`model: opus`) contre le contrat
 déclaré de la cible (Inputs/Output) et, quand il existe, contre le format attendu par
 l'étape suivante du pipeline. Seuil de conformité : 70 %.
+
+Depuis le 2026-08-14, `skill-bench` note aussi un **coût observé** (tokens +
+estimation $, tarif mixte — voir `references/tarifs.md` du skill) : les scores
+ci-dessous datent d'avant cet ajout et n'ont pas encore cette colonne — elle
+apparaîtra au prochain passage.
 
 **Ce tableau est une photo à une date donnée, pas une garantie permanente** — toute
 modification du fichier concerné invalide son score jusqu'au prochain passage.
