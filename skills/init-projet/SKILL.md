@@ -87,6 +87,13 @@ pour ce projet, en sautant tout thème déjà établi par la reconnaissance :
 3. **Stack & hébergement** — framework, base de données éventuelle, cible de déploiement.
 4. **Méthode** — TDD ou non, stratégie git, niveau d'autonomie accordé à Claude
    (demander validation à chaque étape vs avancer seul et rendre compte).
+5. **Doc externe** (optionnel, seulement si le projet mentionne une bibliothèque ou un
+   produit externe dont la doc devra être consultée régulièrement) — poser en question
+   fermée : « veux-tu qu'on recherche la doc de [produit] et qu'on évalue si un MCP
+   dédié vaut le coup, plutôt qu'un outil générique type Context7 ? ». Si oui, appliquer
+   la grille de décision de `create-mcp` (`references/quand-proposer-doc-mcp.md`) pour
+   trancher — ne pas construire le MCP à ce stade, juste noter la décision dans le
+   CLAUDE.md (`_à décider_` si le test des 3 critères n'a pas encore été fait).
 
 Le nombre de salves, leur regroupement et leur ordre sont laissés au jugement : un projet
 dont la stack est déjà visible dans `package.json` n'a pas besoin du thème 3.

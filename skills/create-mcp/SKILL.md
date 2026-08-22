@@ -18,6 +18,9 @@ Références (à lire au moment indiqué, pas avant) :
   sans tout reconstruire. Lire au démarrage d'une demande "audite mes tools MCP".
 - `references/pieges.md` — pièges rencontrés, sections datées par stack. Consulter la
   section "Génériques" toujours ; enrichir dès qu'un piège mord.
+- `references/quand-proposer-doc-mcp.md` — décider si un MCP doc dédié vaut le coût
+  face à un outil générique (ex. Context7), avant de construire quoi que ce soit. Lire
+  face à un doute sur l'opportunité, avant `phase-construction.md`.
 
 ## Les 7 couches, dans l'ordre de dépendance
 
@@ -40,6 +43,8 @@ posée). Ne jamais implémenter/auditer une couche avant celles qui la précède
 
 ## Choisir l'entrée
 
+- Doute sur l'opportunité même de construire un MCP doc dédié (vs un outil générique
+  type Context7) → `quand-proposer-doc-mcp.md` d'abord, avant tout le reste.
 - Nouveau serveur MCP, ou durcissement volontaire de bout en bout → `phase-construction.md`.
 - "Est-ce que mon MCP existant a des trous ?" / rapport d'incident / doute ponctuel
   → `phase-audit.md` (n'implique pas de reconstruire les couches déjà solides).
