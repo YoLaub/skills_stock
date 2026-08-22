@@ -18,6 +18,24 @@ Si un critère ne peut pas être rattaché à une phrase du fichier cible, il ne
 va pas dans le rubric — c'est un avis personnel sur le style, pas un test de
 conformité.
 
+### Cible dotée d'une section `## Contrat`
+
+Certaines cibles séparent explicitement un **Contrat** (contraignant, versionné)
+d'une **Méthode** (indicative). Dans ce cas le rubric ne se construit pas, il se
+recopie : une clause du Contrat = un critère, toutes bloquantes, aucune ajoutée,
+aucune retirée. Un rubric régénéré au jugement à chaque passage dérive autant que
+ce qu'il est censé mesurer — c'est précisément ce que la section Contrat existe
+pour empêcher.
+
+Corollaire, aussi important : **un écart à la Méthode n'est pas un défaut.** Ordre
+des étapes changé, étapes fusionnées, salves de questions regroupées autrement —
+tout cela est admis tant que les clauses du Contrat tiennent, et ne doit jamais
+apparaître dans les findings. Ne reporter un écart de méthode que s'il fait tomber
+une clause, et alors le reporter sous cette clause.
+
+Noter la version du Contrat (`v1`, `v2`…) dans le rapport : une note qui baisse à
+version de contrat inchangée accuse le modèle ou le contexte, pas le skill.
+
 ## 2. Le critère "aval" n'est pas optionnel quand un consommateur existe
 
 Repéré en Phase 1 du skill-bench. Formulation type :
