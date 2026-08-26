@@ -61,19 +61,38 @@ autonome puisque l'agent démarre sans mémoire de cette conversation :
 
 1. Attendre que chaque sous-agent du lot ait ouvert sa PR (ou remonté un blocage).
 2. Pour chaque PR : vérifier que la CI est verte (`gh pr checks`).
-3. **Demander confirmation à l'utilisateur avant chaque merge** (action visible par
+3. **Vérification de conformité** (par PR, avant merge — ne pas sauter même si la CI est
+   verte : des tests verts prouvent que le code écrit fonctionne, pas qu'il couvre tout
+   ce que l'issue demandait). Lancer un sous-agent dédié (type général, contexte propre —
+   jamais un fork du sous-agent qui a codé la PR : il faut un regard qui n'hérite pas de
+   son biais de confirmation), avec en entrée uniquement :
+   - le corps de l'issue GitHub (critères d'acceptation copiés tels quels, `gh issue view <numéro>`),
+   - le diff de la PR (`gh pr diff <numéro>`).
+
+   Consigne : pour chaque critère d'acceptation, dire s'il est couvert par du code **et**
+   un test (pas juste une case cochée dans la description de la PR), partiellement, ou
+   absent — verdict par critère, sans reformuler le critère ni commenter le style. Ce
+   contrôle porte sur cette PR seule, à son ouverture : il ne relit pas les PR déjà
+   mergées de l'epic — sinon une phase pourrait sembler couverte parce qu'une autre,
+   antérieure, a laissé du code qui y ressemble sans que ce soit la PR courante qui
+   l'apporte.
+   - Si un critère est absent ou partiel : traiter comme un blocage (étape 7) — ne pas
+     merger. Renvoyer le sous-agent d'origine sur ce point précis (liste des critères
+     manquants), une seule relance, sinon escalader à l'utilisateur.
+4. **Demander confirmation à l'utilisateur avant chaque merge** (action visible par
    l'équipe, identique à la Phase 3 séquentielle) — un merge à la fois, pas de merge
-   groupé silencieux même si toutes les CI sont vertes.
-4. Merger (squash ou merge selon la convention consignée en Phase 2/CLAUDE.md).
+   groupé silencieux même si toutes les CI sont vertes et la conformité validée.
+5. Merger (squash ou merge selon la convention consignée en Phase 2/CLAUDE.md).
    L'issue se ferme automatiquement.
-5. Supprimer le worktree traité :
+6. Supprimer le worktree traité :
    ```bash
    git worktree remove ../<repo>-issue-<numéro>
    ```
-6. Si un sous-agent remonte un blocage (tests rouges persistants, ambiguïté sur les
-   critères d'acceptation), ne pas le laisser réessayer en boucle : le superviseur
-   décide — corriger le prompt et relancer une fois, ou escalader à l'utilisateur.
-   Les autres issues du lot continuent en parallèle, non affectées par ce blocage.
+7. Si un sous-agent remonte un blocage (tests rouges persistants, ambiguïté sur les
+   critères d'acceptation, ou conformité invalidée à l'étape 3), ne pas le laisser
+   réessayer en boucle : le superviseur décide — corriger le prompt et relancer une fois,
+   ou escalader à l'utilisateur. Les autres issues du lot continuent en parallèle, non
+   affectées par ce blocage.
 
 ## 5. Relancer
 
