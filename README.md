@@ -33,6 +33,7 @@ Un **skill** décrit un pipeline ou un processus complexe. Un **agent** est un s
 | `brain-builder` | Crée et maintient des "cerveaux projets" sous forme de vaults Obsidian structurés (architecture 3 couches : raw / wiki / reports), inspirés de l'approche LLM Wiki. |
 | `skill-optimizer` | Optimise un SKILL.md existant par micro-éditions validées (approche SkillOpt) : baseline → proposition → évaluation → commit ou revert. |
 | `skill-bench` | Banc de test qui évalue un ou plusieurs skills/agents contre leur objectif déclaré, produit un tableau de notation comparatif (score **et** coût estimé en tokens/$), et renvoie ceux qui échouent vers `skill-optimizer` — détecte, ne corrige jamais lui-même. |
+| `agent-optimizer` | Optimise un agent existant (`agents/*.md`) par micro-éditions validées, guidées par un corpus d'anti-patterns (mémoire fictive, quantification sans provenance, redondance canonique, absence d'échelle de réponse, règles en tension, métriques décoratives, persona-lore, description non opérante, absence de porte d'intake) et mesurées avant/après via `skill-bench`. |
 | `greenfield-tdd-okf` | Workflow répétable pour démarrer un projet greenfield en TDD avec index OKF, en deux modes choisis en Phase 0 — **viber** (cadrage minimal, direct au bootstrap git-flow) ou **coder** (cadrage documenté en 5 fichiers `docs/`, Epics + Issues GitHub, TDD via GitHub Flow). |
 | `presentation-builder` | Construit une présentation orale (soutenance, pitch, talk, démo) avec modèle assertion-preuve et design system fermé — export Marp en .pptx/PDF, schémas Mermaid et graphiques automatiques, porte de contrôle visuelle avant livraison. |
 | `skill-architect` | Conçoit l'architecture d'un nouveau skill ou refactore la structure d'un skill existant — SOLID transposé aux skills, patterns (Template Method, Facade, Pipeline, Strategy), découpage par vitesse de changement, checklist de revue. |
@@ -197,6 +198,11 @@ manuelle ni configuration.
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── evals/
+│   ├── agent-optimizer/
+│   │   ├── SKILL.md
+│   │   ├── references/
+│   │   │   └── anti-patterns.md
+│   │   └── scripts/
 │   ├── greenfield-tdd-okf/
 │   │   ├── SKILL.md
 │   │   └── references/
