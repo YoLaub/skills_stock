@@ -85,6 +85,16 @@ explicite au sous-agent : incarner le persona pour toute question fermée que
 la cible poserait, jusqu'à produire le(s) livrable(s) déclaré(s) — jamais
 s'arrêter en attente d'un humain réel.
 
+**Sandboxing obligatoire** : si la cible a accès à des outils d'écriture
+(`Write`, `Edit`, ou équivalent — vérifier son frontmatter `tools`), ajouter
+explicitement à la consigne : « n'utilise aucun outil pour lire ou modifier
+un vrai fichier du dépôt pendant ce test ; produis ton livrable complet
+uniquement comme texte de ta réponse finale ». Un incident réel l'a révélé :
+sans cette consigne, un agent testé avec Write/Edit a effectivement modifié
+un fichier de décision réel du dépôt en croyant traiter une vraie demande —
+`skill-bench` doit rester un test isolé, jamais une action qui touche le
+dépôt de la cible qu'il évalue.
+
 Sauvegarder la sortie brute dans `skill-bench/runs/<cible>/eval-<id>/`, ainsi
 que les stats d'usage renvoyées par la notification de fin d'agent
 (`subagent_tokens`, `tool_uses`, `duration_ms`) dans
