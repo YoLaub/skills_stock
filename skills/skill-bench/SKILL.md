@@ -166,7 +166,12 @@ Compiler un tableau unique, toutes cibles confondues :
 | ... | | | | | | |
 
 Verdict `Conforme` si `pct_global` ≥ 70 (seuil déjà utilisé par défaut dans
-`score_eval.py` — cohérence avec `skill-optimizer`), sinon `À corriger`.
+`score_eval.py` — cohérence avec `skill-optimizer`) **ET** que tous les
+scénarios individuels sont `passed: true` dans `aggregate.json`, sinon
+`À corriger`. Un scénario qui échoue son propre `seuil_succes` — typiquement
+parce qu'un critère bloquant y a été violé (voir `references/rubric-guide.md`
+règle 1) — ne doit jamais être absorbé par une bonne moyenne sur les autres
+scénarios : un échec net reste un échec net, même à `pct_global` élevé.
 Préciser en note sous le tableau : « Coût estimé, pas facturé — tarif mixte
 70/30 input/output, voir `references/tarifs.md` ». Présenter le tableau à
 l'utilisateur.

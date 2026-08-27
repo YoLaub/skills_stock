@@ -141,9 +141,12 @@ python skills/agent-optimizer/scripts/compare_bench_runs.py \
 ```
 
 Décision automatique :
-- **COMMIT** — delta positif, aucune régression de scénario
-- **DISCUSSION** — delta positif mais régression sur au moins un scénario →
-  trancher avec l'utilisateur
+- **COMMIT** — delta positif, aucune régression de scénario, et **aucun
+  scénario encore en échec** après l'édition (un scénario qui reste sous son
+  `seuil_succes` ne peut jamais donner un COMMIT, même à delta global positif
+  — typiquement un critère bloquant toujours violé, cf. corpus AP-02)
+- **DISCUSSION** — delta positif mais régression et/ou scénario(s) encore en
+  échec → trancher avec l'utilisateur
 - **REVERT** — delta nul ou négatif → restaurer :
   ```bash
   cp agent-optimizer/agent-workspace/<slug>/iteration-<N-1>/<nom-agent>.md <chemin/vers/agent.md>

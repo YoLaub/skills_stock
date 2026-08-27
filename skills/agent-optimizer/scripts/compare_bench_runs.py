@@ -39,15 +39,21 @@ def compare(before: dict, after: dict) -> dict:
         if a and (a["pct"] < b["pct"] or (b["passed"] and not a["passed"])):
             regressions.append({"eval_id": eval_id, "avant": b["pct"], "apres": a["pct"]})
 
-    decision = "COMMIT" if delta_pct > 0 and not regressions else (
-        "DISCUSSION" if delta_pct > 0 and regressions else "REVERT"
-    )
+    still_failing = [d["eval_id"] for d in after.get("details", []) if not d.get("passed", True)]
+
+    if delta_pct > 0 and not regressions and not still_failing:
+        decision = "COMMIT"
+    elif delta_pct > 0:
+        decision = "DISCUSSION"
+    else:
+        decision = "REVERT"
 
     return {
         "avant": {"run": before.get("iteration", "?"), "pct": before["pct_global"]},
         "apres": {"run": after.get("iteration", "?"), "pct": after["pct_global"]},
         "delta_pct": round(delta_pct, 1),
         "regressions": regressions,
+        "still_failing": still_failing,
         "decision": decision
     }
 
@@ -62,6 +68,8 @@ def print_result(result: dict):
     if result["regressions"]:
         for r in result["regressions"]:
             print(f"  ⚠️  Scénario {r['eval_id']} régresse : {r['avant']}% → {r['apres']}%")
+    if result["still_failing"]:
+        print(f"  ⚠️  Scénario(s) encore en échec après édition : {result['still_failing']}")
     symbol = {"COMMIT": "✅", "DISCUSSION": "⚠️", "REVERT": "❌"}[result["decision"]]
     print(f"\n  {symbol} {result['decision']}")
     print("═" * 50 + "\n")
