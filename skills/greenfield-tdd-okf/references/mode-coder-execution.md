@@ -19,16 +19,24 @@ y a plus d'une issue non bloquée à traiter : il devient superviseur et délèg
 Pour chaque issue du lot, avant de lancer le sous-agent :
 
 ```bash
-git worktree add ../<repo>-issue-<numéro> -b issue-<numéro>-<slug> main
+git worktree add ../<repo>-issue-<numéro> -b issue-<numéro>-<slug> <base>
 ```
+
+`<base>` = la branche d'intégration du projet : `main` en GitHub Flow, `dev` si le
+CLAUDE.md impose `main ← dev ← feature`. Merger les PR vers cette même branche.
 
 - Un worktree par issue évite que deux sous-agents modifient le même arbre de travail
   en parallèle (checkout conflictuel, fichiers de build partagés).
 - Nommer le dossier de façon prévisible (`<repo>-issue-<numéro>`) pour pouvoir le
   retrouver et le nettoyer après merge.
-- Si deux issues du même lot touchent manifestement les mêmes fichiers malgré l'absence
-  de `Depends on` déclarée (le backlog s'est trompé), ne pas les paralléliser : les
-  repasser en séquentiel et corriger `Depends on` dans l'issue GitHub pour la suite.
+- Si deux issues du même lot touchent manifestement la même **logique** dans les mêmes
+  fichiers malgré l'absence de `Depends on` déclarée (le backlog s'est trompé), ne pas
+  les paralléliser : les repasser en séquentiel et corriger `Depends on` dans l'issue.
+- **Exception** : un simple point d'agrégation partagé (barrel `index.ts`, un `route.ts`
+  qui monte des tools, `retro.md`) n'est pas un motif de sérialisation. Paralléliser
+  quand même : le conflit au merge est un append-vs-append trivial (garder les deux
+  côtés). Demander à chaque sous-agent de n'ajouter qu'UNE unité par fichier + UNE ligne
+  d'enregistrement, et de logger le conflit attendu dans son rapport.
 
 ## 3. Déléguer un sous-agent par issue
 
@@ -79,6 +87,13 @@ autonome puisque l'agent démarre sans mémoire de cette conversation :
    - Si un critère est absent ou partiel : traiter comme un blocage (étape 7) — ne pas
      merger. Renvoyer le sous-agent d'origine sur ce point précis (liste des critères
      manquants), une seule relance, sinon escalader à l'utilisateur.
+   - Donner au sous-agent de conformité un worktree dédié (`git worktree add
+     ../<repo>-verify-<PR> --detach origin/<branche-PR>`) et lui demander de **rejouer la
+     suite** (`vitest` + lint + build) en plus de lire le diff : des critères comme un
+     e2e ou un test de non-régression ne se voient pas dans un diff.
+   - Si ce sous-agent meurt pour une raison d'environnement (veille machine, watchdog,
+     pas de progrès) : le relancer une fois ; au 2e échec, faire le contrôle inline
+     (lire les fichiers clés + rejouer la suite soi-même) plutôt que boucler.
 4. **Demander confirmation à l'utilisateur avant chaque merge** (action visible par
    l'équipe, identique à la Phase 3 séquentielle) — un merge à la fois, pas de merge
    groupé silencieux même si toutes les CI sont vertes et la conformité validée.
