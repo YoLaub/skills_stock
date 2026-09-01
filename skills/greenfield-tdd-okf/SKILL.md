@@ -1,6 +1,6 @@
 ---
 name: greenfield-tdd-okf
-description: Workflow répétable pour construire un produit greenfield en TDD avec index OKF, en deux modes — viber (rapide, direct au code) ou coder (cadrage documenté → backlog GitHub → GitHub Flow). Demande toujours le mode en premier. Utiliser au démarrage d'un nouveau projet applicatif ou d'un gros module.
+description: Workflow répétable pour construire un produit en TDD avec index OKF, en deux modes — viber (rapide, direct au code) ou coder (cadrage documenté → backlog GitHub → GitHub Flow). Détecte d'abord si le dépôt est vierge ou contient déjà du code : sur un projet en cours, cartographie l'existant via archi-scanner avant de reprendre le workflow. Demande toujours le mode. Utiliser au démarrage d'un nouveau projet applicatif ou d'un gros module, comme à la reprise d'un projet non initié avec ce skill.
 ---
 
 # Greenfield TDD + OKF
@@ -15,8 +15,34 @@ Références (à lire au moment indiqué, pas avant) :
   fiche de la phase 3 (mode viber) ou de la phase 3 coder.
 - `references/mode-coder.md` — déroulé complet du mode coder (phases 1 à 4). À lire
   entièrement dès que le mode coder est choisi, pas avant.
+- `references/reprise-projet.md` — reprise d'un projet existant (brownfield). À lire
+  entièrement dès que la Phase 0 détecte du code préexistant, pas avant.
 
-## Phase 0 — Choix du mode (toujours, avant toute autre action)
+## Phase 0 — Détection du terrain (toujours, avant toute autre action)
+
+Le workflow suppose un dépôt vierge ; sur un projet déjà entamé, appliquer les phases 1-2
+telles quelles écraserait ou dupliquerait l'existant. Trancher d'abord :
+
+```bash
+git log --oneline -1 2>/dev/null
+ls -A | grep -v '^\.git$' | head -20
+find . -maxdepth 2 -name "package.json" -o -name "pyproject.toml" -o -name "go.mod" \
+  -o -name "Cargo.toml" -o -name "composer.json" -o -name "Gemfile" -o -name "pom.xml" \
+  2>/dev/null | grep -v node_modules | head
+```
+
+- **Nouveau projet** — dossier vide, ou seulement `.git`/README/LICENSE, aucun manifeste
+  avec des dépendances, aucun code source → ne rien changer, continuer en Phase 0 bis.
+- **Projet en cours** — un manifeste, du code source ou un historique git de travail réel
+  → **dérouler `references/reprise-projet.md`** (cartographie via le skill `archi-scanner`,
+  inventaire des acquis, choix du point de reprise) AVANT toute autre phase. Ce fichier
+  renvoie ensuite vers la bonne phase du workflow.
+
+En cas de doute (quelques fichiers épars, un bootstrap abandonné), demander à
+l'utilisateur plutôt que deviner : le coût d'un scan inutile est faible, celui d'un
+bootstrap par-dessus du code existant ne l'est pas.
+
+## Phase 0 bis — Choix du mode
 
 Poser une question fermée (AskUserQuestion) : **viber** (rapide — cadrage minimal, direct
 au bootstrap puis aux features, phases 1-4 ci-dessous) ou **coder** (produit à part

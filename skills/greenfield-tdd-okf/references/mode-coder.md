@@ -40,6 +40,10 @@ CLAUDE.md, `docs/index/` OKF, `retro.md`, dépôt GitHub distant créé). Sans c
 commandes `gh` ci-dessous n'ont pas de dépôt sur lequel créer labels/milestones/issues, et
 `mode-coder-execution.md` (Phase 3) n'a pas de `CLAUDE.md` de projet à donner aux sous-agents.
 
+Sur un projet repris (`references/reprise-projet.md`), le bootstrap est déjà fait : ne pas
+le rejouer. Vérifier seulement que `CLAUDE.md`, `docs/index/` et le dépôt distant existent,
+et créer uniquement ce qui manque.
+
 1. Depuis `docs/05_github_backlog.md` : créer un label par tag d'Epic s'il n'existe pas
    (`gh label create`), puis un milestone GitHub par Epic (`gh api repos/:owner/:repo/milestones -f title=...`).
 2. Créer une issue de suivi (tracking issue) par Epic sur son milestone, avec la liste
