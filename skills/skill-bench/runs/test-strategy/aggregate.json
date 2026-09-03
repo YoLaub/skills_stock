@@ -1,0 +1,19 @@
+{
+  "iteration": "test-strategy",
+  "score_total": 7.5,
+  "score_max_total": 10,
+  "pct_global": 75.0,
+  "passed": 1,
+  "failed": 0,
+  "total_evals": 1,
+  "details": [
+    {
+      "eval_id": 1,
+      "score": 7.5,
+      "score_max": 10,
+      "pct": 75.0,
+      "passed": true
+    }
+  ],
+  "timestamp": "2026-09-03T21:59:20.495666"
+}

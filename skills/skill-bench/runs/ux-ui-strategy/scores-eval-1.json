@@ -1,0 +1,34 @@
+{
+  "eval_id": 1,
+  "eval_type": "nominal",
+  "score_max": 10,
+  "score_obtenu": 10,
+  "seuil_succes": 7,
+  "criteres_scores": [
+    {
+      "nom": "Conformité au contrat déclaré",
+      "poids": 3,
+      "score_obtenu": 3,
+      "note": "Les 6 étapes du SKILL.md sont déroulées dans l'ordre — terrain (`git branch --show-current` + `git status --porcelain`, stop si dev/arbre sale), design system lu AVANT le mapping (étape 1, tokens HSL de globals.css + inventaire packages/ui), inventaire des 2 vues, mapping exhaustif (#2563eb→bg-primary, gray-100→bg-card, text-gray-900/500→foreground/muted-foreground, border-gray-200→border-border, police non réimportée), garde-fous contrat, tous les états + mobile-first 360→1280, et résumé de fin de chantier structuré."
+    },
+    {
+      "nom": "FOND préservé (non-régression)",
+      "poids": 3,
+      "score_obtenu": 3,
+      "note": "Aucun handler/appel API/état touché — §3.3 exige `onSubmit → useWithdraw()` inchangé, états `isPending`/`error` « consommés jamais modifiés », signature de props `WithdrawalHistory` inchangée ; les 3 data-testid sont explicitement remis « à l'identique » sur l'élément au même rôle (`withdrawal-row` sur les TableRow de donnée, pas l'en-tête), `role=\"table\"` préservé avec la vigilance sur `overflow-x-auto` cassant l'arbre ARIA, texte « Montant à retirer » mot pour mot avec le piège accents TSX, et gate bloquant §4.4 « aucun test modifié ; si une spec casse → le markup est en tort » + build + lint."
+    },
+    {
+      "nom": "Supervision correctement déclenchée",
+      "poids": 2,
+      "score_obtenu": 2,
+      "note": "L'indépendance est démontrée (apps/helm vs packages/ui, aucun composant partagé) puis le protocole supervision.md est déroulé : superviseur qui ne code pas (§4.0), un worktree + une branche par vue basés sur `feat/withdrawal-limits`, sous-agent général frais (« pas un fork »), 2e sous-agent frais distinct pour le contrôle de non-régression avec rejeu en worktree détaché, et MR `glab mr create --target-branch feat/withdrawal-limits` une à la fois avec confirmation utilisateur, « jamais de merge vers dev » ; il ajoute même la sérialisation U1 après U2 si les deux doivent ajouter le même composant Shadcn."
+    },
+    {
+      "nom": "Qualité intrinsèque du livrable",
+      "poids": 2,
+      "score_obtenu": 2,
+      "note": "Actionnable tel quel : chaque #hex/gray-XXX de la maquette a une cible sémantique (table étape 1 + « zéro #hex/gray-XXX dans le diff final » érigé en critère bloquant de la checklist d'écart), les 5 états non-nominaux sont déclinés par vue (skeleton, vide via TableCaption plutôt que table vide, erreur `Alert role=\"alert\"` + retry, disabled `isPending`, focus visible), le dark mode est couvert par les tokens (`.dark`) ; et l'inconnue est traitée honnêtement — « chercher un identifiant WDR-00x annoté dans le HTML. Absent → ne rien inventer sur les plafonds », aucune règle de plafond fabriquée."
+    }
+  ],
+  "timestamp": "2026-09-03"
+}

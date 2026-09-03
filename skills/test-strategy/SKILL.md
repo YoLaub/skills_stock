@@ -117,7 +117,15 @@ Pendant la génération, applique les skills ActivCreew selon les fichiers touch
   et **corrige le code de prod** jusqu'au vert. Rapporte le résultat final sans enjoliver.
 - **RED** : lance les tests, **vérifie qu'ils échouent pour la bonne raison** (assertion
   métier, pas une erreur de setup/import). Confirme l'échec attendu, listes-les, et
-  laisse le code de prod intact.
+  laisse la **logique de prod** intacte.
+  - Un squelette de **structure** minimal (fonction exportée qui `throw`/renvoie une
+    valeur neutre, sans la règle métier) est autorisé UNIQUEMENT pour faire passer
+    l'échec d'un `Cannot find module` / `is not a function` à l'assertion métier —
+    à signaler explicitement comme plomberie de test, jamais comme une implémentation.
+  - Pose en tête de chaque fichier RED le bloc `// RED — <raison de l'échec attendu>`
+    (c'est ce que `dev-strategy` scanne à son étape 0).
+  - Un test « garde-fou de contraste » qui passe déjà n'a rien à faire dans un lot RED :
+    soit il devient rouge lui aussi, soit il part dans un fichier GREEN séparé.
 
 Détecte les noms de services Docker avant tout `docker compose` (`docker compose
 config --services` → `postgres-test`, `redis-test`). Pour le mapping des tests

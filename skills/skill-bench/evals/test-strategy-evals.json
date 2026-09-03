@@ -1,0 +1,26 @@
+{
+  "cible": "test-strategy",
+  "type": "skill-orchestrateur",
+  "fichier_cible": "skills/test-strategy/SKILL.md",
+  "consommateur_aval": "dev-strategy",
+  "created_at": "2026-09-03",
+  "evals": [
+    {
+      "id": 1,
+      "type": "nominal",
+      "description": "Génération de tests RED depuis un .feature couvrant unitaire + E2E",
+      "persona": "Product-minded dev ActivCreew. Travaille sur feat/family-invite (arbre propre). Répond : mode RED (comportement pas encore implémenté), zone déjà dans la spec.",
+      "prompt": "On est sur feat/family-invite. Voici docs/gherkin/family/invite.feature :\n\n```\nFeature: Invitation d'un membre à une famille\n\n  @unit\n  Scenario: refuser une invitation vers un email déjà membre\n    Given une famille avec le membre \"a@ex.com\"\n    When on invite \"a@ex.com\"\n    Then l'invitation est refusée avec le code FAM-011\n\n  @e2e\n  Scenario: l'admin famille voit l'invitation en attente\n    Given je suis connecté comme admin de la famille \"Durand\"\n    When j'invite \"b@ex.com\"\n    Then la liste des invitations affiche \"b@ex.com\" avec le statut \"En attente\"\n```\n\nGénère les tests RED. Déroule ton workflow complet ; tu n'as pas accès au repo ici, donc produis comme livrable texte : le routage (niveau + emplacement de chaque test), le contenu des fichiers de test, le protocole d'exécution/validation RED, et le résumé de fin de chantier.",
+      "rubric": {
+        "criteres": [
+          { "nom": "Conformité au contrat déclaré", "description": "Produit : détection du terrain, question Red/Green posée, routage correct (unitaire colocalisé src/api/family/... en jest.unit.config.js ; E2E frontend/tests/e2e/), fichiers de test nommés should_*_when_*, structure AAA, accents en entités si TSX, résumé de fin de chantier (fichiers, niveau, mode, résultat).", "poids": 3 },
+          { "nom": "Sémantique RED correcte", "description": "Les tests DOIVENT échouer pour une raison métier (assertion de valeur), pas sur import/setup ; le code de prod reste intact ; l'échec attendu est confirmé et listé.", "poids": 3 },
+          { "nom": "Supervision correctement déclenchée", "description": "2 unités indépendantes (unit family + e2e family) => renvoie à references/supervision.md : superviseur qui ne code pas, worktree + sous-agent frais par unité, contrôle de conformité par un 2e agent (chaque Scenario couvert, RED échoue pour la bonne raison), MR vers feat/<chantier> jamais dev.", "poids": 2 },
+          { "nom": "Exploitable par dev-strategy", "description": "Les fichiers RED produits sont détectables par dev-strategy (marqueur RED, emplacements attendus) et suffisent à définir le comportement à implémenter sans reformulation.", "poids": 2 }
+        ],
+        "score_max": 10,
+        "seuil_succes": 7
+      }
+    }
+  ]
+}

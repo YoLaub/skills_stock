@@ -47,8 +47,10 @@ du projet, planifier, implémenter, et valider le GREEN. Suis ces étapes DANS L
 
 **Périmètre** — cherche dans cet ordre :
 
-1. **Tests RED** — `Strapi v5/tests/**/*.test.js` et `frontend/tests/e2e/**/*.spec.ts`
-   contenant `Ces tests sont des tests RED` ou `// RED`.
+1. **Tests RED** — cherche dans les 3 emplacements où `test-strategy` écrit :
+   `Strapi v5/src/api/**/*.test.ts` (unitaires colocalisés), `Strapi v5/tests/**/*.{test.ts,test.js}`
+   (intégration), `frontend/tests/e2e/**/*.spec.ts` (E2E). Marqueur : un bloc de tête
+   `// RED — <raison de l'échec attendu>` (posé par `test-strategy` à l'étape 3).
    Ces tests sont la **source de vérité** : ils définissent le comportement attendu.
 2. **Specs Gherkin** — `docs/gherkin/**/*.feature` : pour comprendre le _pourquoi_
    métier et les cas limites que les tests couvrent.
@@ -113,7 +115,12 @@ QA final (une fois toutes les unités livrées) : `yarn tsc --noEmit` dans `Stra
 et `pnpm build` dans `frontend/` → 0 erreur ; `./scripts/run-affected-tests.sh` →
 tous GREEN.
 
-### Étape 5 — Exécution et validation GREEN
+### Étape 5 — Validation GREEN globale (après agrégation)
+
+Cette étape est la vérification d'ensemble **une fois les unités mergées sur
+`feat/<chantier>`** — pas l'endroit où le superviseur écrit du code d'unité (ça se
+passe dans les sous-agents, cf. `supervision.md`). En périmètre 1 unité, elle suit
+directement l'implémentation directe.
 
 Pour chaque fichier de test RED :
 

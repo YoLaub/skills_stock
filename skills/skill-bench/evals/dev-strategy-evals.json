@@ -1,0 +1,26 @@
+{
+  "cible": "dev-strategy",
+  "type": "skill-orchestrateur",
+  "fichier_cible": "skills/dev-strategy/SKILL.md",
+  "consommateur_aval": "ux-ui-strategy",
+  "created_at": "2026-09-03",
+  "evals": [
+    {
+      "id": 1,
+      "type": "nominal",
+      "description": "Passage RED -> GREEN sur 2 domaines backend indépendants (withdrawal + banner)",
+      "persona": "Dev backend ActivCreew, connaît Strapi v5. Travaille sur la sous-branche feat/withdrawal-limits (arbre propre). Répond de façon réaliste : stack Backend seul, pas de service tiers, périmètre = les 2 fichiers RED cités.",
+      "prompt": "On est sur feat/withdrawal-limits. J'ai 2 fichiers de tests RED confirmés, indépendants :\n- Strapi v5/src/api/withdrawal/services/withdrawal-validation.test.ts : asserte que `validateWithdrawalAmount(amount, balance)` refuse un montant > solde (WD-004) et refuse un montant <= 0 (WD-005), échec actuel `validateWithdrawalAmount is not a function`.\n- Strapi v5/src/api/banner/services/banner-schedule.test.ts : asserte que `nextActiveBanner(banners, now)` renvoie la bannière dont la fenêtre couvre `now`, la plus prioritaire (BN-002), échec `nextActiveBanner is not a function`.\nFais passer ça au vert. Déroule ton workflow complet, dis-moi précisément ce que tu ferais à chaque étape (tu n'as pas accès au repo ici, produis le plan + le protocole d'exécution + le résumé de fin de chantier attendu comme livrable texte).",
+      "rubric": {
+        "criteres": [
+          { "nom": "Conformité au contrat déclaré", "description": "Produit : détection du terrain (branche/arbre), lecture des conventions, plan avec DRY check + cartographie par couche, découpage en 2 unités, résumé de fin de chantier structuré (fichiers/rôle SOLID, résultat tests, permissions, prochaines étapes).", "poids": 3 },
+          { "nom": "Supervision correctement déclenchée", "description": "2 unités indépendantes => renvoie explicitement à references/supervision.md : superviseur qui ne code pas, 1 worktree + 1 sous-agent frais par unité, base = feat/<chantier>, contrôle de conformité par un 2e agent frais avant merge, MR jamais vers dev.", "poids": 3 },
+          { "nom": "Gate RED/GREEN et règles bloquantes", "description": "Le test gagne sur le code (jamais modifier un test, jamais 'retirer du scope'); hand-off vers ux-ui-strategy seulement après GREEN + tsc/build + E2E; ne devine pas ce qu'il ne peut pas lire.", "poids": 2 },
+          { "nom": "Exploitable par ux-ui-strategy", "description": "Le livrable de sortie annoncé (tests GREEN, data-testid et permissions en place, liste des écrans/fichiers de prod) est directement consommable par ux-ui-strategy sans reformulation.", "poids": 2 }
+        ],
+        "score_max": 10,
+        "seuil_succes": 7
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "cible": "ux-ui-strategy",
+  "type": "skill-orchestrateur",
+  "fichier_cible": "skills/ux-ui-strategy/SKILL.md",
+  "consommateur_aval": null,
+  "created_at": "2026-09-03",
+  "evals": [
+    {
+      "id": 1,
+      "type": "nominal",
+      "description": "Habillage de 2 vues de maquette sur du code GREEN existant",
+      "persona": "Dev frontend ActivCreew (Next.js, Shadcn, tokens HSL). Sur feat/withdrawal-limits (arbre propre), le comportement est GREEN. Répond : réutiliser le token primary, Shadcn si un composant manque.",
+      "prompt": "On est sur feat/withdrawal-limits, comportement GREEN. docs/maquettes/withdrawal.html contient 2 vues indépendantes : `#form` (formulaire de retrait) et `#history` (liste des retraits). Le code de prod existe :\n- apps/helm/app/withdrawal/page.tsx : formulaire brut, data-testid=\"withdrawal-amount-input\", data-testid=\"withdrawal-submit\", texte asserté par un test E2E : \"Montant à retirer\". Handler onSubmit -> useWithdraw().\n- packages/ui/src/components/WithdrawalHistory : table brute, data-testid=\"withdrawal-row\", rôle aria \"table\".\nLa maquette utilise #2563eb pour les boutons, gray-100 pour les fonds de carte, et montre seulement l'état nominal.\nColle le design. Tu n'as pas accès au repo ici : produis comme livrable texte le plan d'intégration (inventaire écrans, mapping tokens, garde-fous contrat), le protocole d'exécution, et la vérification de non-régression attendue.",
+      "rubric": {
+        "criteres": [
+          { "nom": "Conformité au contrat déclaré", "description": "Produit : détection du terrain, lecture design system avant mapping, plan avec inventaire des 2 vues + mapping explicite #2563eb->token primary / gray-100->token sémantique (zéro couleur en dur) + garde-fous contrat (testid, texte 'Montant à retirer', aria), couverture de TOUS les états + responsive mobile-first, résumé de fin de chantier.", "poids": 3 },
+          { "nom": "FOND préservé (non-régression)", "description": "data-testid conservés à l'identique sur l'élément au même rôle ; handlers/appels API/états non touchés ; si un test casse c'est le markup à corriger jamais le test ; gate : specs E2E/RTL qui passaient passent encore + build + lint.", "poids": 3 },
+          { "nom": "Supervision correctement déclenchée", "description": "2 vues indépendantes => renvoie à references/supervision.md : superviseur qui ne code pas, worktree + sous-agent frais par vue, contrôle de non-régression par un 2e agent avant merge, MR vers feat/<chantier> jamais dev.", "poids": 2 },
+          { "nom": "Qualité intrinsèque du livrable", "description": "Le plan est actionnable tel quel : chaque #hex/gray de la maquette a une cible sémantique, les états non-nominaux (loading/vide/erreur/disabled/focus) sont explicitement listés, le dark mode est couvert par les tokens.", "poids": 2 }
+        ],
+        "score_max": 10,
+        "seuil_succes": 7
+      }
+    }
+  ]
+}

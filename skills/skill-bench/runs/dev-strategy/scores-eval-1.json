@@ -1,0 +1,34 @@
+{
+  "eval_id": 1,
+  "eval_type": "nominal",
+  "score_max": 10,
+  "score_obtenu": 8.5,
+  "seuil_succes": 7,
+  "criteres_scores": [
+    {
+      "nom": "Conformité au contrat déclaré",
+      "poids": 3,
+      "score_obtenu": 3,
+      "note": "Les 6 étapes du SKILL.md sont déroulées dans l'ordre (git branch --show-current + git status --porcelain, lecture CLAUDE.md/permissions.json/schema, DRY check par grep, cartographie par couche avec 'Schema/Routes/Controller : NON', découpage U1/U2, et un résumé de fin de chantier tabulé avec rôle SOLID par fichier, résultat des tests, 'Permissions ajoutées : aucune' et prochaines étapes)."
+    },
+    {
+      "nom": "Supervision correctement déclenchée",
+      "poids": 3,
+      "score_obtenu": 1.5,
+      "note": "Le protocole est correctement déclenché et complet (renvoi explicite à references/supervision.md, worktrees basés sur feat/withdrawal-limits, sous-agents généraux frais non-forks, 2e agent de conformité avec verdict par critère et worktree --detach, MR vers feat/<chantier> avec confirmation, 'jamais vers dev'), mais le livrable viole la règle §1 qu'il vient d'énoncer en écrivant lui-même le code des deux unités (Étape 5, 'Proposition d'implémentation' pour withdrawal-validation.ts et banner-schedule.ts) et en glissant un 'arbitrage honnête' qui rouvre la porte à une implémentation inline."
+    },
+    {
+      "nom": "Gate RED/GREEN et règles bloquantes",
+      "poids": 2,
+      "score_obtenu": 2,
+      "note": "Gate posé comme bloquant (tous GREEN + yarn tsc --noEmit 0 erreur par unité), 'corriger le code de prod, jamais le test' et 'aucun test retiré du scope' explicites, tests marqués non modifiés, absence de hand-off assumée, et surtout aucune invention : les contrats de retour indécidables sans lire les assertions sont listés en 'Points en suspens (non devinés)' plutôt que tranchés."
+    },
+    {
+      "nom": "Exploitable par ux-ui-strategy",
+      "poids": 2,
+      "score_obtenu": 2,
+      "note": "Le livrable tranche correctement l'aval — 'Pas de hand-off vers ux-ui-strategy : rien à habiller (backend pur)', data-testid et permissions N/A justifiés — ce qui correspond exactement au triage par vue de ux-ui-strategy (pas de code de prod front => reste chez dev-strategy), et il liste les fichiers de prod et les extensions hors périmètre sans reformulation nécessaire."
+    }
+  ],
+  "timestamp": "2026-09-03"
+}

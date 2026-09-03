@@ -1,0 +1,19 @@
+{
+  "iteration": "dev-strategy",
+  "score_total": 8.5,
+  "score_max_total": 10,
+  "pct_global": 85.0,
+  "passed": 1,
+  "failed": 0,
+  "total_evals": 1,
+  "details": [
+    {
+      "eval_id": 1,
+      "score": 8.5,
+      "score_max": 10,
+      "pct": 85.0,
+      "passed": true
+    }
+  ],
+  "timestamp": "2026-09-03T21:59:20.474158"
+}
