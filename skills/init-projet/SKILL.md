@@ -120,7 +120,7 @@ laissé dormant.
 
 ### 6. Suite
 Proposer l'étape suivante (bootstrap du repo, première feature) — par exemple via le
-skill `greenfield-tdd-okf` s'il est disponible.
+skill `greenfield-bootstrap` s'il est disponible (puis `tdd-feature-okf` par feature).
 
 ---
 

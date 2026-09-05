@@ -8,7 +8,7 @@ ne se justifie pas.
 groupe de Scenarios d'un même `.feature`. Deux unités sont indépendantes si elles ne
 ciblent pas le même fichier de test ni les mêmes fixtures.
 
-Adapté de `greenfield-tdd-okf` (`mode-coder-execution.md`), au modèle de branches imposé
+Adapté de `tdd-backlog-run` (`references/execution.md`), au modèle de branches imposé
 `git-workflow-chantier` et à la stack ActivCreew.
 
 ## 1. Le superviseur ne code pas

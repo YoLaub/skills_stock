@@ -1,15 +1,16 @@
-# Mode coder — cadrage documenté → backlog GitHub → GitHub Flow
+# Mode coder — cadrage documenté → backlog GitHub
 
 Variante du greenfield pour un produit à part entière (pas un module isolé) : le temps
-investi en phase 1 se rembourse en épargnant des allers-retours de cadrage pendant le
+investi en Phase 1 se rembourse en épargnant des allers-retours de cadrage pendant le
 développement. Éprouvé sur Survival AI (2026-08) : les 5 documents ci-dessous en sont
 issus, généralisés en templates.
+
+Ce fichier couvre le **cadrage + le backlog** (Phases 1-2). L'exécution des issues
+(Phase 3) et la clôture (Phase 4) sont dans le skill `tdd-backlog-run`.
 
 Références dédiées :
 - `references/templates-coder/` — un fichier par document de `docs/`, à lire un par un
   au moment de rédiger le document correspondant, pas tous d'un coup.
-- `references/mode-coder-execution.md` — protocole d'exécution de la Phase 3
-  (superviseur/sous-agents), à lire entièrement dès que la Phase 2 est terminée.
 
 ## Phase 1 — Recherche & cadrage documenté
 
@@ -34,50 +35,36 @@ Références dédiées :
 
 ## Phase 2 — Backlog GitHub (Epics + Issues)
 
-Prérequis avant cette phase : bootstrap du dépôt (identique à la Phase 2 « Bootstrap » du mode
-viber du `SKILL.md` parent — `git init -b main` avec premier commit avant toute autre branche,
-CLAUDE.md, `docs/index/` OKF, `retro.md`, dépôt GitHub distant créé). Sans ce bootstrap, les
-commandes `gh` ci-dessous n'ont pas de dépôt sur lequel créer labels/milestones/issues, et
-`mode-coder-execution.md` (Phase 3) n'a pas de `CLAUDE.md` de projet à donner aux sous-agents.
+Prérequis : le bootstrap du dépôt (Phase 2 du `SKILL.md` — `git init -b main` avec
+premier commit avant toute autre branche, `CLAUDE.md`, `docs/index/` OKF, `retro.md`,
+dépôt GitHub distant créé). Sans ce bootstrap, les commandes `gh` ci-dessous n'ont pas de
+dépôt sur lequel créer labels/milestones/issues, et `tdd-backlog-run` n'a pas de
+`CLAUDE.md` de projet à donner aux sous-agents.
 
-Sur un projet repris (`references/reprise-projet.md`), le bootstrap est déjà fait : ne pas
-le rejouer. Vérifier seulement que `CLAUDE.md`, `docs/index/` et le dépôt distant existent,
-et créer uniquement ce qui manque.
+Sur un projet repris (le code existe mais pas de plan), le bootstrap est déjà fait : ne
+pas le rejouer. Vérifier seulement que `CLAUDE.md`, `docs/index/` et le dépôt distant
+existent, et créer uniquement ce qui manque.
 
 1. Depuis `docs/05_github_backlog.md` : créer un label par tag d'Epic s'il n'existe pas
-   (`gh label create`), puis un milestone GitHub par Epic (`gh api repos/:owner/:repo/milestones -f title=...`).
+   (`gh label create`), puis un milestone GitHub par Epic
+   (`gh api repos/:owner/:repo/milestones -f title=...`).
 2. Créer une issue de suivi (tracking issue) par Epic sur son milestone, avec la liste
    des User Stories en checklist. Créer une issue par User Story rattachée au même
    milestone, description = le format « En tant que / je veux / afin de » + critères
-   d'acceptation copiés tels quels du document.
+   d'acceptation copiés tels quels du document. Le champ **Dépend de** devient une ligne
+   `Depends on #<numéro>` dans le corps de l'issue.
 3. **Confirmer avec l'utilisateur avant de pousser quoi que ce soit sur GitHub** (labels,
    milestones, issues sont visibles par toute l'équipe) : présenter le plan de création,
    attendre validation, puis exécuter.
 
-## Phase 3 — Exécution des issues (GitHub Flow, TDD, superviseur/sous-agents)
+## Fin — Hand-off
 
-Le TDD est identique au mode viber (phase 3) ; ce qui change est le modèle de branche
-(GitHub Flow, PR par issue) **et** le mode d'exécution : dès que plusieurs issues sont
-non bloquées en même temps, le thread principal devient un superviseur qui délègue
-chaque issue à un sous-agent dédié plutôt que de les dérouler une par une.
-
-Déroulé complet (calcul du lot, délégation, worktrees, critères de fusion) :
-`references/mode-coder-execution.md` — à lire entièrement avant la première issue de
-la Phase 3.
-
-## Phase 4 — Clôture
-
-1. Rétro finale dans `retro.md`.
-2. Fermer chaque milestone GitHub une fois toutes ses issues closes.
-3. Tag de version éventuel sur `main`.
-4. Reporter les nouveaux pièges génériques dans `references/pieges.md` du skill parent.
+Backlog créé → l'exécution des issues (GitHub Flow, TDD, superviseur/sous-agents) et la
+clôture des milestones se font dans **`tdd-backlog-run`**.
 
 ## Évolution
 
 - Les 5 templates de documents → `references/templates-coder/*.md` (append-only par
-  variante si un domaine a besoin d'une section en plus ; ne pas réécrire l'existant).
-- Le protocole d'exécution (calcul des lots, prompts des sous-agents, worktrees) →
-  `references/mode-coder-execution.md` ; c'est ce fichier qui évolue si le mode de
-  délégation change, pas celui-ci.
-- Ce fichier ne bouge que si le déroulé du mode coder change (nouvelle phase, nouvel
+  variante ; ne pas réécrire l'existant).
+- Ce fichier ne bouge que si le déroulé du cadrage change (nouvelle phase, nouvel
   ordre) — pas pour un ajustement de formulation de question.

@@ -8,7 +8,7 @@ prod qui la portent. Deux vues sont indépendantes si elles ne partagent pas de 
 à modifier (un composant `packages/ui` partagé retouché = une seule unité qui couvre les
 deux vues, ou une unité "composant" séparée traitée en premier).
 
-Adapté de `greenfield-tdd-okf` (`mode-coder-execution.md`), au modèle de branches imposé
+Adapté de `tdd-backlog-run` (`references/execution.md`), au modèle de branches imposé
 `git-workflow-chantier` et à la stack ActivCreew.
 
 ## 1. Le superviseur ne code pas

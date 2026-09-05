@@ -8,7 +8,7 @@ Une seule unité → l'implémenter directement, le coût de délégation ne se 
 permissions / frontend d'un domaine). Deux unités sont indépendantes si elles ne
 partagent pas de fichier de logique.
 
-Adapté de `greenfield-tdd-okf` (`mode-coder-execution.md`), au modèle de branches imposé
+Adapté de `tdd-backlog-run` (`references/execution.md`), au modèle de branches imposé
 `git-workflow-chantier` et à la stack ActivCreew.
 
 ## 1. Le superviseur ne code pas

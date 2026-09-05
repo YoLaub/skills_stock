@@ -1,8 +1,8 @@
-# Exécution Phase 3 (mode coder) — superviseur / sous-agents
+# Exécution — superviseur / sous-agents (Phase 1 de tdd-backlog-run)
 
-Protocole autonome (aucune dépendance à un autre skill du dépôt) pour dérouler les
-issues d'un milestone. Le thread principal ne code jamais lui-même une issue dès qu'il
-y a plus d'une issue non bloquée à traiter : il devient superviseur et délègue.
+Protocole autonome pour dérouler les issues d'un milestone. Le thread principal ne code
+jamais lui-même une issue dès qu'il y a plus d'une issue non bloquée à traiter : il
+devient superviseur et délègue.
 
 ## 1. Calculer le lot exécutable
 
@@ -48,17 +48,17 @@ autonome puisque l'agent démarre sans mémoire de cette conversation :
 - Corps complet de l'issue GitHub (description + critères d'acceptation), copié tel
   quel — ne pas résumer, les critères doivent rester vérifiables mécaniquement.
 - Chemin de `CLAUDE.md` du projet (conventions, commandes).
-- Chemin de `references/pieges.md` du skill parent + rappel de ne lire que la section
+- Chemin de `references/pieges.md` de ce skill + rappel de ne lire que la section
   générique et celle de la stack du projet.
-- Chemin de `references/okf-fiche-template.md` du skill parent.
-- Consigne d'exécution, identique à la Phase 3 séquentielle :
+- Chemin de `tdd-feature-okf/references/okf-fiche-template.md` (format de la fiche OKF).
+- Consigne d'exécution, identique à la boucle `tdd-feature-okf` en séquentiel :
   1. Tests d'abord sur la logique pure (`services/`), UI/routes en orchestration mince.
      Toute logique = un service unique consommé par UI et interfaces machine.
   2. Suite verte → build → E2E réel.
   3. Ouvrir la PR (`Closes #<numéro>`) depuis la branche du worktree.
   4. Écrire la fiche OKF `docs/index/<feature>.md`.
-  5. Ajouter les pièges rencontrés à `retro.md` (et à `references/pieges.md` du skill
-     parent si générique).
+  5. Ajouter les pièges rencontrés à `retro.md` (et à `references/pieges.md` de ce skill
+     si générique — à répliquer ensuite dans les 3 skills du trio).
   6. Ne jamais merger soi-même — s'arrêter une fois la PR ouverte et la CI lancée, et
      rendre la main au superviseur.
 - Consigne de reporting : à la fin, résumer en quelques lignes (issue traitée, PR
@@ -112,13 +112,14 @@ autonome puisque l'agent démarre sans mémoire de cette conversation :
 ## 5. Relancer
 
 Une fois le lot mergé, recalculer les issues nouvellement non bloquées (étape 1) et
-répéter. S'arrêter quand le milestone n'a plus d'issue ouverte → Phase 4.
+répéter. S'arrêter quand le milestone n'a plus d'issue ouverte → Phase 2 (clôture) du
+`SKILL.md`.
 
 ## Pourquoi ce protocole
 
 - Sans lui, le thread principal accumule dans son propre contexte les logs de test, les
   diffs et les allers-retours de build de **toutes** les issues du projet, à la suite.
-  Sur un mode coder qui vise un produit complet (pas juste un module), ça sature vite.
+  Sur un backlog qui vise un produit complet (pas juste un module), ça sature vite.
 - Le backlog (`docs/05_github_backlog.md`) identifie déjà l'ordre de dépendance des
   Epics ; ce protocole est ce qui manquait pour exploiter cette info au niveau issue et
   paralléliser réellement, au lieu de dérouler une issue à la fois même quand rien ne

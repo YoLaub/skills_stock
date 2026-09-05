@@ -1,8 +1,11 @@
-# Reprise d'un projet existant (brownfield)
+# Se réorienter dans un projet en cours
 
-Chemin à suivre quand la Phase 0 du `SKILL.md` a détecté du code préexistant. Objectif :
-retrouver l'état réel du projet et repartir du bon endroit du workflow, sans réécrire ce
-qui existe ni supposer une architecture.
+> **Fichier partagé** — copie identique dans `tdd-feature-okf` et `tdd-backlog-run`.
+> Toute modification doit être répliquée dans les deux.
+
+À lire quand la Phase 0 du `SKILL.md` a détecté du code préexistant et que tu ne sais
+plus où en est le projet (contexte redémarré, reprise après une pause). Objectif :
+retrouver l'état réel sans réécrire ce qui existe ni supposer une architecture.
 
 ## Étape 1 — Cartographier avant de décider
 
@@ -36,36 +39,31 @@ Vérifier la présence de chacun de ces artefacts et noter son état :
 l'état de départ, pas une régression à imputer au travail à venir : le noter
 explicitement à l'utilisateur avant d'écrire une ligne.
 
-## Étape 3 — Restituer et choisir la suite avec l'utilisateur
+## Étape 3 — Choisir la suite (routage)
 
 Présenter en une dizaine de lignes maximum : stack, périmètre couvert, état des tests,
-artefacts du workflow manquants. Puis poser une question fermée (AskUserQuestion) sur la
-suite :
+artefacts du workflow manquants. Puis, selon l'intention :
 
-- **Continuer une feature en cours** → aller directement à la Phase 3 du `SKILL.md`
-  (TDD sur branche dédiée), en s'appuyant sur `archi-output/INDEX.md` au lieu de
-  redécouvrir le code.
-- **Ajouter une nouvelle feature** → Phase 1 réduite : pas de recherche de modèle open
-  source (le modèle, c'est le code existant), seulement les questions de cadrage propres
-  à la feature, puis Phase 3.
-- **Reprendre le cadrage produit du mode coder** (le projet a du code mais pas de plan)
-  → `references/mode-coder.md`, Phase 1, en rédigeant les documents **à partir de
-  l'existant scanné** et non d'une vision inventée.
+- **Continuer / ajouter une feature** → rester dans `tdd-feature-okf`, Phase 1, en
+  s'appuyant sur `archi-output/INDEX.md` au lieu de redécouvrir le code. Pour une
+  nouvelle feature : pas de recherche de modèle open source (le modèle, c'est le code
+  existant), seulement le cadrage propre à la feature.
+- **Dérouler un lot d'issues / un milestone** → `tdd-backlog-run`.
+- **Le projet a du code mais aucun plan** → `greenfield-bootstrap` mode coder, en
+  rédigeant les 5 documents **à partir de l'existant scanné**, pas d'une vision inventée.
 
-Le choix du mode viber/coder de la Phase 0 reste valable et s'applique à la suite.
+## Combler les manques, sans big bang
 
-## Étape 4 — Combler les manques, sans big bang
-
-Les artefacts manquants repérés à l'étape 2 se rattrapent au fil de l'eau, pas dans un
-commit de reprise géant :
+Les artefacts manquants se rattrapent au fil de l'eau, pas dans un commit de reprise
+géant :
 
 - `CLAUDE.md`, `retro.md`, `docs/index/` absents → les créer maintenant, en un commit
   dédié, à partir de `archi-output/PROJECT_MEMORY.md`.
 - Fiches OKF manquantes → **ne pas documenter rétroactivement tout le code**. Une fiche
   s'écrit quand on touche au module correspondant, pas avant.
-- Pas de branche `dev` ni de modèle de branche → proposer de l'aligner sur la Phase 2 du
-  `SKILL.md`, mais laisser l'utilisateur trancher : sur un dépôt partagé, changer le
-  modèle de branche impacte d'autres personnes.
+- Pas de branche `dev` ni de modèle de branche → proposer de l'aligner sur la Phase 2 de
+  `greenfield-bootstrap`, mais laisser l'utilisateur trancher : sur un dépôt partagé,
+  changer le modèle de branche impacte d'autres personnes.
 - Pas de tests → écrire les tests de la feature en cours (TDD normal), et seulement des
   tests de caractérisation sur le code existant que cette feature modifie.
 

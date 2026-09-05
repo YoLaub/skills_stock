@@ -1,5 +1,8 @@
 # Pièges connus
 
+> **Fichier partagé** — copie identique dans `greenfield-bootstrap`, `tdd-feature-okf`
+> et `tdd-backlog-run`. Toute addition doit être répliquée dans les 3.
+
 Fichier append-only : ajouter chaque nouveau piège sous la section de la stack concernée
 (créer la section si besoin, la dater). Ne consulter que les sections correspondant à la
 stack du projet en cours — inutile de charger le reste en contexte.

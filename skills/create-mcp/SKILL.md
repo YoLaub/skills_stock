@@ -1,6 +1,6 @@
 ---
 name: create-mcp
-description: Construire, durcir ou auditer la sécurité d'un serveur MCP (Model Context Protocol) — identité par token personnel, OAuth 2.1 pour connecteurs tiers, cloisonnement multi-tenant par tool, rate-limit par identité, logging des appels, mode sandbox, bearer sur le manifeste agent. Déclenche sur "crée un serveur MCP", "sécurise/durcis mon MCP", "audite mes tools MCP", "ajoute l'auth/le rate-limit/l'OAuth à mon MCP". Ne couvre PAS le bootstrap d'une app entière (voir greenfield-tdd-okf) ni la conception des tools eux-mêmes — uniquement la couche sécurité autour de tools MCP déjà définis ou à définir.
+description: Construire, durcir ou auditer la sécurité d'un serveur MCP (Model Context Protocol) — identité par token personnel, OAuth 2.1 pour connecteurs tiers, cloisonnement multi-tenant par tool, rate-limit par identité, logging des appels, mode sandbox, bearer sur le manifeste agent. Déclenche sur "crée un serveur MCP", "sécurise/durcis mon MCP", "audite mes tools MCP", "ajoute l'auth/le rate-limit/l'OAuth à mon MCP". Ne couvre PAS le bootstrap d'une app entière (voir greenfield-bootstrap) ni la conception des tools eux-mêmes — uniquement la couche sécurité autour de tools MCP déjà définis ou à définir.
 ---
 
 # Create MCP — sécuriser un serveur MCP

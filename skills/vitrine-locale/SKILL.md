@@ -5,13 +5,13 @@ description: >
   artisan, coiffeur, institut...) en Astro + Tailwind : cadrage par question ouverte
   puis questions fermées de réflexion sur les zones d'ambiguïté réelles, recherche
   design actuelle, charte de style anti-générique/anti-emoji/anti-tiret, puis
-  développement en git-flow + TDD + index OKF (même principe que greenfield-tdd-okf,
-  mais spécialisé site vitrine local Astro one-page). Déclenche quand l'utilisateur
-  dit : "site pour [un commerce]", "site vitrine one-page", "refonte du site de
-  [client]", "nouveau site pour un restaurant/fast-food/coiffeur/artisan". Ne pas
-  confondre avec greenfield-tdd-okf (produit applicatif générique, multi-pages,
-  logique métier) : ici toujours Astro statique, toujours one-page, toujours
-  commerce local.
+  développement en git-flow + TDD + index OKF (même principe que le trio
+  greenfield-bootstrap / tdd-feature-okf, mais spécialisé site vitrine local Astro
+  one-page). Déclenche quand l'utilisateur dit : "site pour [un commerce]", "site
+  vitrine one-page", "refonte du site de [client]", "nouveau site pour un
+  restaurant/fast-food/coiffeur/artisan". Ne pas confondre avec greenfield-bootstrap
+  (produit applicatif générique, multi-pages, logique métier) : ici toujours Astro
+  statique, toujours one-page, toujours commerce local.
 ---
 
 # Vitrine locale (Astro)
@@ -60,7 +60,7 @@ script E2E = build + grep du HTML. Lire `references/pieges.md` avant de configur
 l'outillage.
 
 ## Phase 5 — Chaque feature (TDD, OKF)
-Même principe que greenfield-tdd-okf phase 3 : logique pure testée en premier,
+Même principe que `tdd-feature-okf` : logique pure testée en premier,
 suite verte → build → E2E réel, fiche OKF par feature (`docs/index/`), merge
 `--no-ff` vers `dev` uniquement si tout est vert. Relire chaque texte visible avec
 `references/style-guide.md` avant de merger.
