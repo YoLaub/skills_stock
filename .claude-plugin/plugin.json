@@ -1,7 +1,7 @@
 {
   "name": "yls",
-  "description": "Agence Emploi (candidat/RH), pipelines Certification et Cours (skills orchestrateurs + agents), trio TDD greenfield-bootstrap / tdd-backlog-run / tdd-feature-okf, skill-architect, skill-optimizer, agent-optimizer, skill-bench, archi-scanner/archi-diagrams, presentation-builder, brain-builder, create-mcp, init-projet, compile-rules, vitrine-locale, send-feedback.",
-  "version": "0.2.0",
+  "description": "Agence Emploi (candidat/RH), pipelines Certification et Cours (skills orchestrateurs + agents), brainstorm-cdc, maquette-vers-produit, trio TDD greenfield-bootstrap / tdd-backlog-run / tdd-feature-okf, skill-architect, skill-optimizer, agent-optimizer, skill-bench, archi-scanner/archi-diagrams, presentation-builder, brain-builder, create-mcp, init-projet, compile-rules, vitrine-locale, send-feedback.",
+  "version": "0.3.0",
   "author": {
     "name": "YoLaub"
   }
