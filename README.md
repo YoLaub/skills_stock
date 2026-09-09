@@ -34,7 +34,9 @@ Un **skill** décrit un pipeline ou un processus complexe. Un **agent** est un s
 | `skill-optimizer` | Optimise un SKILL.md existant par micro-éditions validées (approche SkillOpt) : baseline → proposition → évaluation → commit ou revert. |
 | `skill-bench` | Banc de test qui évalue un ou plusieurs skills/agents contre leur objectif déclaré, produit un tableau de notation comparatif (score **et** coût estimé en tokens/$), et renvoie ceux qui échouent vers `skill-optimizer` — détecte, ne corrige jamais lui-même. |
 | `agent-optimizer` | Optimise un agent existant (`agents/*.md`) par micro-éditions validées, guidées par un corpus d'anti-patterns (mémoire fictive, quantification sans provenance, redondance canonique, absence d'échelle de réponse, règles en tension, métriques décoratives, persona-lore, description non opérante, absence de porte d'intake) et mesurées avant/après via `skill-bench`. |
-| `greenfield-tdd-okf` | Workflow répétable pour démarrer un projet greenfield en TDD avec index OKF, en deux modes choisis en Phase 0 — **viber** (cadrage minimal, direct au bootstrap git-flow) ou **coder** (cadrage documenté en 5 fichiers `docs/`, Epics + Issues GitHub, TDD via GitHub Flow). |
+| `greenfield-bootstrap` | Démarre un **nouveau** projet (dépôt vierge) en TDD avec index OKF, en deux modes choisis en Phase 0 — **viber** (cadrage minimal, direct au bootstrap git-flow) ou **coder** (cadrage documenté en 5 fichiers `docs/`, Epics + Issues GitHub). Premier maillon du trio greenfield. |
+| `tdd-feature-okf` | Implémente **une** feature en TDD sur un projet suivant les conventions greenfield — branche depuis `dev`, logique pure testée en premier dans `services/`, fiche OKF, `retro.md`, merge `--no-ff`. Point de ré-entrée quand le contexte redémarre sur un projet en cours. |
+| `tdd-backlog-run` | Déroule un **lot** d'issues / un milestone GitHub en TDD — un superviseur délègue chaque issue à un sous-agent frais (worktree dédié, red-green, PR), avec une porte de conformité par un 2e sous-agent avant chaque merge. Invocable à froid. |
 | `presentation-builder` | Construit une présentation orale (soutenance, pitch, talk, démo) avec modèle assertion-preuve et design system fermé — export Marp en .pptx/PDF, schémas Mermaid et graphiques automatiques, porte de contrôle visuelle avant livraison. |
 | `skill-architect` | Conçoit l'architecture d'un nouveau skill ou refactore la structure d'un skill existant — SOLID transposé aux skills, patterns (Template Method, Facade, Pipeline, Strategy), découpage par vitesse de changement, checklist de revue. |
 | `vitrine-locale` | Construit un site vitrine one-page pour un commerce local en Astro + Tailwind — cadrage, recherche design, charte anti-générique, développement git-flow + TDD + index OKF. |
@@ -104,12 +106,15 @@ coût est une estimation (tarif mixte 70/30 input/output), jamais un montant fac
 | `greenfield-tdd-okf` — mode viber (phases 0-4) | skill | 81.2 % (13/16) | ~0.73 $ | ✅ Conforme | 2026-08-14 |
 | `greenfield-tdd-okf` — mode coder (Phase 1, 5 docs) | skill | 93.3 % (14/15) | ~0.64 $ | ✅ Conforme | 2026-08-14 |
 
+Les lignes `greenfield-tdd-okf` sont un relevé daté : ce skill a depuis été éclaté en
+`greenfield-bootstrap` / `tdd-feature-okf` / `tdd-backlog-run`, non repassés au banc.
+
 Le score du mode viber a varié entre les deux passages (89.7 % le 2026-08-13,
 81.2 % le 2026-08-14) — scénarios/personas différents d'un passage à l'autre, pas
 une régression du skill ; voir la note sur la nature d'un banc de test plus bas.
 
 **Audité sans score chiffré** (protocole plutôt que livrable — voir
-`references/mode-coder-execution.md` du skill) :
+`references/execution.md` de `tdd-backlog-run`) :
 `greenfield-tdd-okf` — protocole superviseur/sous-agents (Phase 3, mode coder) :
 dry-run local des commandes `git worktree` conforme, mais l'audit structurel avait
 détecté un trou de bootstrap entre les deux modes ; corrigé le 2026-08-13
@@ -122,7 +127,7 @@ chemin de sortie ou une ligne de frontmatter, pas sur la logique) : `cv-analyst`
 `gap-analyser`, `presentation-builder`.
 
 **Hors périmètre du banc pour l'instant** : tout le reste du catalogue (jamais passé au
-banc) ; le mode coder de `greenfield-tdd-okf` au-delà de la Phase 1 (nécessite de
+banc) ; `tdd-backlog-run` en exécution réelle (nécessite de
 vraies ressources GitHub) ; `skill-bench` et `skill-optimizer` eux-mêmes (se tester
 soi-même pose un problème d'angle mort, non résolu).
 
@@ -203,7 +208,9 @@ manuelle ni configuration.
 │   │   ├── references/
 │   │   │   └── anti-patterns.md
 │   │   └── scripts/
-│   ├── greenfield-tdd-okf/
+│   ├── greenfield-bootstrap/
+│   ├── tdd-feature-okf/
+│   ├── tdd-backlog-run/
 │   │   ├── SKILL.md
 │   │   └── references/
 │   │       ├── mode-coder.md        # déroulé complet du mode coder
@@ -255,7 +262,7 @@ Zéro script, zéro copie de fichiers. Dans Claude Code :
 
 Tous les agents, skills et commandes du dépôt sont immédiatement actifs, dans
 **n'importe quel projet ouvert dans Claude Code** — pas seulement celui où la commande
-a été tapée. Les skills sont préfixés par le plugin : `/yls:greenfield-tdd-okf`,
+a été tapée. Les skills sont préfixés par le plugin : `/yls:greenfield-bootstrap`,
 `/yls:skill-architect`, etc. Un `/yls:` seul suffit à voir la liste.
 
 Mettre à jour plus tard :
