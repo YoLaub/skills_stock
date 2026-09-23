@@ -10,6 +10,21 @@ description: >
   l'écran est encore brut (HTML nu, pas de design system, pas responsive). Fonctionne
   en binôme avec dev-strategy : dev-strategy rend les tests GREEN (comportement),
   ux-ui-strategy rend l'écran conforme à la maquette (forme) — sans casser le GREEN.
+hooks:
+  PreToolUse:
+    - matcher: "*"
+      hooks:
+        - type: command
+          command: python3 "${CLAUDE_PLUGIN_ROOT}/hooks/gate.py" hook open coherence@docs/maquettes design
+          once: true
+    - matcher: "Edit|Write|MultiEdit|NotebookEdit|Bash"
+      hooks:
+        - type: command
+          command: python3 "${CLAUDE_PLUGIN_ROOT}/hooks/gate.py" hook guard
+  Stop:
+    - hooks:
+        - type: command
+          command: python3 "${CLAUDE_PLUGIN_ROOT}/hooks/gate.py" hook stop
 ---
 
 # Expert en Stratégie UX/UI — ActivCreew
@@ -31,6 +46,23 @@ Références (à lire au moment indiqué, pas avant) :
 - `references/design-system-mapping.md` — où lire le design system + table de traduction maquette→tokens + skills front. Lire à l'étape 1.
 - `references/contrat-non-regression.md` — ce que les tests assertent (testid, textes, ARIA) et comment le préserver. Lire à l'étape 3.
 - `references/patterns-integration.md` — patterns ❌/✅ de traduction + pièges (entités HTML en strings JS…). Lire à l'étape 4, append-only.
+
+## Portes de vérification (non négociables)
+
+**Celui qui a intégré l'écran ne juge pas qu'il ressemble à la maquette.** Deux portes,
+tenues par des agents frais qui n'ont rien codé, et par des hooks (`hooks/gate.py` du
+plugin) : phases ouvertes à l'invocation, conclusion bloquée sans `PASS` sur l'état
+exact du dépôt, tests verrouillés au RED non modifiables.
+
+| Porte | Quand | Agent | Si FAIL |
+|---|---|---|---|
+| `coherence` | étape 0 — **avant** de toucher un pixel | `maquette-spec-coherence` | repasser sur les specs (et le comportement via `dev-strategy`) avant d'habiller ; conflit → l'utilisateur |
+| `design` | étape 5, après intégration | `design-fidelity-reviewer` | renvoyer aux workers UI la liste exacte des éléments absents/différents, relancer |
+
+Outil : `${CLAUDE_PLUGIN_ROOT}/hooks/gate.py` (chemin à passer aux agents) ;
+`gate.py status` pour l'état. Un « écart assumé » ne se décide ni par le worker ni par
+le lead : c'est `gate.py escalate design "<écart>"`, soumis à l'utilisateur. Deux
+`FAIL` de suite sur le même élément → escalade, pas de troisième tour.
 
 ## Deux modes d'usage
 
@@ -60,6 +92,13 @@ Cherche dans cet ordre :
 
 Si aucune maquette n'est trouvée → demande la référence visuelle (fichier, capture, ou
 description) avant d'intégrer. Ne « devine » pas un design.
+
+**Porte `coherence`** — avant tout triage, lancer `maquette-spec-coherence`
+(maquette, specs, `--scope` = dossiers maquette + specs). Habiller un écran dont la
+spec contredit la maquette, c'est figer l'un des deux au hasard. Écarts → corriger les
+specs, et le comportement via `dev-strategy` s'il en découle ; conflits → l'utilisateur,
+cités des deux côtés ; relancer jusqu'au `PASS`. Sa matrice élément ↔ spec sert de
+base à l'inventaire de l'étape 3.
 
 **Triage par vue** : une maquette contient souvent plusieurs vues. Pour CHAQUE vue :
 - **GREEN + code de prod présent** → habillable maintenant par ux-ui-strategy.
@@ -93,6 +132,11 @@ Produis un plan structuré avant d'agir :
 
 1. **Inventaire des écrans** — pour chaque vue : fichier de prod cible, composants
    `packages/ui` réutilisés, ce qui reste à créer.
+1 bis. **Inventaire des éléments, écrit AVANT d'intégrer** — `docs/ux-inventaire/<feature>.md`,
+   une case par élément de la maquette (donnée, action, libellé, état vide / chargement /
+   erreur / désactivé, navigation), fait **depuis la maquette** et non depuis le code.
+   C'est la grille de la porte `design` : écrite après coup, elle ne listerait que ce
+   qui a été fait. Elle ne rétrécit pas en cours de route.
 2. **Mapping design tokens** — correspondances explicites maquette → projet (table de
    `references/design-system-mapping.md`). Tout `#hex` ou `gray-XXX` de la maquette
    DOIT avoir une cible sémantique.
@@ -115,15 +159,17 @@ Team Lead (coordination — ne code pas)
 traduire la maquette vers les tokens/composants (**zéro couleur en dur**, patterns de
 `references/patterns-integration.md`) ; préserver tous les `data-testid` et la logique
 métier ; `french-accents` sur tout TSX, imports `@workspace/...` ; ne pas toucher aux
-fichiers des autres workers ni aux tests.
+fichiers des autres workers ni aux tests. Finir sur « prêt pour vérification » avec
+les lignes de l'inventaire traitées — jamais « terminé ».
 
 **A11y & responsive non négociables** : mobile-first (`flex-col` → `sm:flex-row`),
 `<button>` pour les actions / `<a>` pour la navigation, labels liés, `aria-*` sur les
 éléments custom, focus visible, et TOUS les états (loading/skeleton, vide, erreur,
 disabled, hover/focus/active) — la maquette ne montre souvent que le nominal.
 
-**QA Checker** : `pnpm build` → 0 erreurs ; `pnpm lint` → 0 erreurs ;
-`pnpm exec playwright test <specs concernées>` → **toujours GREEN**.
+**QA Checker** (boucle rapide interne — ce n'est **pas** la porte) : `pnpm build` →
+0 erreurs ; `pnpm lint` → 0 erreurs ; `pnpm exec playwright test <specs concernées>` →
+**toujours GREEN**.
 
 Pour un périmètre réduit (1 écran), inutile de spawner une équipe : intègre directement.
 
@@ -132,18 +178,23 @@ Pour un périmètre réduit (1 écran), inutile de spawner une équipe : intègr
 1. Build + lint OK.
 2. Les tests E2E/unitaires de la feature **passent toujours** (sinon : la forme a cassé
    le fond → corrige le markup, jamais le test).
-3. Vérification visuelle vs maquette : hiérarchie, espacements, couleurs (via tokens),
-   états, responsive (mobile → desktop), dark mode (gratuit si tokens respectés).
-   Utilise `/run` ou `/verify` pour lancer l'écran si besoin.
-4. Checklist d'écart maquette ↔ rendu : liste ce qui diffère encore et pourquoi (écart
-   assumé vs à corriger).
+3. **Porte `design`** — lancer `design-fidelity-reviewer` avec : maquette + vues,
+   l'inventaire `docs/ux-inventaire/<feature>.md`, comment lancer l'app et atteindre
+   chaque vue, commandes tests + build + lint, chemin de `gate.py`. Il capture l'écran
+   réel (mobile / desktop × jour / nuit, chaque état), le compare ligne par ligne à
+   l'inventaire, rejoue les tests et cherche les couleurs en dur.
+4. `FAIL` → renvoyer aux workers UI **la liste exacte** (vue, élément, présent /
+   différent / absent, capture), puis relancer la porte. On ne passe à l'étape 6
+   qu'avec un `PASS`, ou une escalade explicite pour les écarts que seul
+   l'utilisateur peut accepter.
 
 ### Étape 6 — Résumé de fin de chantier
 
 Termine par un récap structuré : maquette intégrée (fichier, N vues), design system
 respecté (tokens, composants réutilisés, zéro couleur en dur), fichiers modifiés
 (forme uniquement), non-régression (testid préservés, X/Y specs E2E GREEN, build+lint),
-couverture états & responsive, écarts assumés / à suivre.
+couverture états & responsive, **verdict des portes tel qu'enregistré** (`gate.py
+status`), et les écarts escaladés à l'utilisateur avec leur raison.
 
 ## Ce qu'il ne faut jamais faire
 
@@ -157,9 +208,13 @@ couverture états & responsive, écarts assumés / à suivre.
 - Mettre des accents natifs dans du JSX/TSX, ou une entité HTML dans une string JS
   (piège détaillé dans `references/patterns-integration.md`)
 - Réimporter une police déjà configurée globalement (CSP + perf)
+- Juger soi-même la conformité à la maquette, ou classer un écart « assumé » sans
+  l'utilisateur — seul un `PASS` de `design-fidelity-reviewer` clôt l'intégration
+- Écrire l'inventaire des éléments après l'intégration
 
 ## Évolution de ce skill
 
 - Nouveau pattern de traduction ou piège d'intégration → `references/patterns-integration.md`.
 - Nouveau token, composant ou correspondance → `references/design-system-mapping.md`.
+- Règle de porte (verdict, verrou, escalade) → `hooks/gate.py` du plugin + ses tests.
 - Ne modifier ce SKILL.md que si l'orchestration (étapes, équipe) change.
