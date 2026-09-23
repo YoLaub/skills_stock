@@ -13,6 +13,21 @@ description: >
   Playwright, Cypress, k6, GitHub Actions, GitLab CI. Même sans le mot "test", si
   le code manque de tests ou qu'il demande de la fiabilité/qualité, propose
   proactivement une stratégie de test adaptée.
+hooks:
+  PreToolUse:
+    - matcher: "*"
+      hooks:
+        - type: command
+          command: python3 "${CLAUDE_PLUGIN_ROOT}/hooks/gate.py" hook open coherence@docs/maquettes
+          once: true
+    - matcher: "Edit|Write|MultiEdit|NotebookEdit|Bash"
+      hooks:
+        - type: command
+          command: python3 "${CLAUDE_PLUGIN_ROOT}/hooks/gate.py" hook guard
+  Stop:
+    - hooks:
+        - type: command
+          command: python3 "${CLAUDE_PLUGIN_ROOT}/hooks/gate.py" hook stop
 ---
 
 # Expert en Stratégie de Test & Automatisation — ActivCreew
@@ -38,6 +53,24 @@ Références (à lire au moment indiqué, pas avant) :
 - `references/ci-templates.md` — templates GitHub Actions / GitLab CI (travail CI/CD).
 - `references/mode-conseil.md` — pyramide, TDD, AAA, quality gates (mode Conseil uniquement).
 
+## Portes de vérification (non négociables en mode Génération)
+
+Celui qui écrit les tests ne décide pas qu'ils sont bons. Deux portes, chacune tenue
+par un agent frais qui n'a rien écrit — et par des hooks (`hooks/gate.py` du plugin) :
+tant qu'une phase ouverte n'a pas de verdict `PASS` sur l'état exact du dépôt, la
+skill ne peut pas conclure.
+
+| Porte | Quand | Agent | Si FAIL |
+|---|---|---|---|
+| `coherence` | étape 0, si une maquette existe — **avant** d'écrire un test | `maquette-spec-coherence` | corriger les specs, relancer ; un conflit → l'utilisateur |
+| `red` / `green` | étape 3, après exécution | `spec-conformity-gate` | compléter les tests manquants, relancer |
+
+Chemin de l'outil : `${CLAUDE_PLUGIN_ROOT}/hooks/gate.py` (à passer tel quel aux
+agents). `gate.py status` montre où on en est. Si un PASS est hors d'atteinte (conflit
+à arbitrer, spec ambiguë), rendre la main : `gate.py escalate <phase> "<raison>"`, et
+le dire en toutes lettres — une escalade n'est pas une validation. Deux FAIL de suite
+sur le même point → escalade, pas de troisième tour.
+
 ## ⚡ Orchestration (mode Génération)
 
 Objectif : en **une seule invocation**, passer d'une spec à des tests générés,
@@ -53,6 +86,12 @@ Cherche les fichiers `docs/gherkin/**/*.feature` (Glob).
 - **Aucune spec** → mode **Couverture** : invoque le skill `test-planner` pour
   établir la matrice de couverture (parcours USER/Admin, objectif ~80%), PUIS
   demande à l'utilisateur quelle zone couvrir (cf. Étape 1).
+
+**Porte `coherence`** — si une maquette couvre le périmètre (`docs/maquettes/**`),
+lancer `maquette-spec-coherence` (maquette, specs, `--scope` = dossiers maquette +
+specs) **avant toute génération**. Des tests écrits sur une spec qui contredit la
+maquette figent l'erreur : on corrige d'abord les specs (orphelins, écarts de mots),
+on remonte les conflits à l'utilisateur, puis on relance l'agent jusqu'au `PASS`.
 
 ### Étape 1 — Questions OBLIGATOIRES avant de générer
 
@@ -72,6 +111,9 @@ Pose ces questions via `AskUserQuestion` AVANT toute génération :
      implémenté** et **DOIVENT ÉCHOUER**. On génère, on exécute, on **confirme
      l'échec attendu**, et on **ne touche PAS au code de prod**. On annonce
      clairement quels tests sont red et pourquoi.
+
+Dès la réponse connue, ouvrir la phase correspondante :
+`python3 "${CLAUDE_PLUGIN_ROOT}/hooks/gate.py" open red` (ou `open green`).
 
 ### Étape 2 — Router et générer les tests
 
@@ -105,6 +147,13 @@ Pendant la génération, applique les skills ActivCreew selon les fichiers touch
   métier, pas une erreur de setup/import). Confirme l'échec attendu, listes-les, et
   laisse le code de prod intact.
 
+**Porte `red` / `green`** — ton propre constat ne suffit pas. Lancer
+`spec-conformity-gate` (mode `red` ou `green`, sources de spec, fichiers de test,
+commandes, chemin de `gate.py`). En RED, il vérifie qu'**un test existe par
+Scenario / ligne d'Examples / CA**, qu'il échoue sur une assertion métier, et il
+**verrouille** les tests validés : `dev-strategy` ne pourra plus les modifier. `FAIL` →
+compléter exactement les manques qu'il liste, relancer l'agent.
+
 Détecte les noms de services Docker avant tout `docker compose` (`docker compose
 config --services` → `postgres-test`, `redis-test`). Pour le mapping des tests
 affectés, voir `Strapi v5/tests/test-map.json` et `/validate-tests`.
@@ -112,11 +161,14 @@ affectés, voir `Strapi v5/tests/test-map.json` et `/validate-tests`.
 ### Résumé de fin de chantier
 
 Termine toujours par un récap : fichiers créés (avec liens), niveau de chacun,
-mode red/green, résultat d'exécution (X passed / Y failed), et prochaines étapes.
+mode red/green, résultat d'exécution (X passed / Y failed / Z skipped), **verdict de
+chaque porte tel qu'enregistré** (`gate.py status` — PASS, ou escalade et pourquoi),
+et prochaines étapes. Jamais « terminé » sans PASS.
 
 ## Évolution de ce skill
 
 - Nouveau pattern de test par niveau → le fichier `references/` du niveau concerné.
 - Nouveau principe générique → `references/mode-conseil.md`.
 - Nouveau domaine du repo → la liste de l'étape 1.
+- Règle de porte (verdict, verrou, escalade) → `hooks/gate.py` du plugin + ses tests.
 - Ne modifier la structure de ce SKILL.md que si l'orchestration elle-même change.
