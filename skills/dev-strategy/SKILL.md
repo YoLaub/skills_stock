@@ -9,6 +9,21 @@ description: >
   quand une branche contient des tests qui échouent et que le code de prod est
   manquant. Fonctionne en binôme avec test-strategy : test-strategy génère les
   tests RED, dev-strategy les rend GREEN.
+hooks:
+  PreToolUse:
+    - matcher: "*"
+      hooks:
+        - type: command
+          command: python3 "${CLAUDE_PLUGIN_ROOT}/hooks/gate.py" hook open green coherence@docs/maquettes
+          once: true
+    - matcher: "Edit|Write|MultiEdit|NotebookEdit|Bash"
+      hooks:
+        - type: command
+          command: python3 "${CLAUDE_PLUGIN_ROOT}/hooks/gate.py" hook guard
+  Stop:
+    - hooks:
+        - type: command
+          command: python3 "${CLAUDE_PLUGIN_ROOT}/hooks/gate.py" hook stop
 ---
 
 # Expert en Stratégie d'Implémentation TDD GREEN — ActivCreew
@@ -25,6 +40,27 @@ Références (à lire au moment indiqué, pas avant) :
 - `references/principes-solid-dry.md` — SOLID, DRY, code reviewable. Lire avant l'étape 3.
 - `references/cartographie-conventions.md` — fichiers par couche (Backend/Frontend) + règles non négociables. Lire à l'étape 3.
 - `references/patterns-activcreew.md` — patterns de code éprouvés (schema, service pur, controller, webhook…). Lire à l'étape 4, append-only.
+
+## Portes de vérification (non négociables)
+
+**Aucun worker ne décide que son travail est fini, et le Team Lead non plus.** Un
+worker rend « prêt pour vérification » ; « terminé » n'existe qu'après un verdict
+`PASS` d'un agent frais qui n'a rien codé. Des hooks (`hooks/gate.py` du plugin) le
+tiennent mécaniquement : phases `green` (et `coherence` si une maquette existe)
+ouvertes à l'invocation, conclusion bloquée tant qu'elles n'ont pas de `PASS` sur
+l'état exact du dépôt ; tests verrouillés au RED non modifiables.
+
+| Porte | Quand | Agent |
+|---|---|---|
+| `coherence` | étape 0, si maquette — **avant** de coder | `maquette-spec-coherence` |
+| `red` | étape 0, si les tests RED n'ont pas de verdict sur cette branche | `spec-conformity-gate` (mode red) |
+| `green` | étape 5, après le vert | `spec-conformity-gate` (mode green) |
+
+Outil : `${CLAUDE_PLUGIN_ROOT}/hooks/gate.py` (chemin à passer aux agents) ;
+`gate.py status` pour l'état. Sur `FAIL` : renvoyer au worker concerné **la liste
+exacte** des manques, puis relancer la porte. Deux `FAIL` de suite sur le même point →
+`gate.py escalate green "<raison>"` et le dire à l'utilisateur : une escalade n'est pas
+une validation.
 
 ## ⚡ Workflow dev-strategy (orchestration)
 
@@ -45,6 +81,15 @@ Cherche dans cet ordre :
 
 Si aucun test RED n'est trouvé → demande le périmètre à l'utilisateur, puis
 invoque `/test-strategy` en mode RED pour générer les tests d'abord.
+
+**Portes d'entrée** (`gate.py status`) :
+- **Maquette présente et `coherence` sans PASS** → lancer `maquette-spec-coherence`.
+  Si specs et maquette divergent, on ne code pas : corriger les specs (et les tests
+  RED qui en dépendent, via `test-strategy`), remonter les conflits à l'utilisateur,
+  relancer jusqu'au `PASS`.
+- **Tests RED sans verdict `red` sur la branche** (écrits hors porte) → lancer
+  `spec-conformity-gate` en mode red : il vérifie qu'ils couvrent la spec et les
+  **verrouille**. Un scénario sans test → retour à `test-strategy`, pas de code.
 
 ### Étape 1 — Lecture des conventions projet
 
@@ -103,8 +148,11 @@ Team Lead (coordination uniquement — ne code pas)
 - Appliquer SOLID et DRY : vérifier que la logique n'existe pas ailleurs avant de la créer
 - Ne pas toucher aux fichiers des autres workers
 - Déclarer les nouvelles routes dans `permissions.json`
+- Finir sur un rapport « prêt pour vérification » : fichiers touchés, critères
+  (Scenario / CA) visés, commandes lancées et résultat brut. Jamais « terminé ».
 
-**QA Checker** :
+**QA Checker** (boucle rapide interne — ce n'est **pas** la porte : il fait partie de
+l'équipe qui a codé) :
 - `yarn tsc --noEmit` dans `Strapi v5/` → 0 erreurs
 - `pnpm build` dans `frontend/` → 0 erreurs
 - `yarn test tests/unit/<domaine>/` → tous GREEN
@@ -121,14 +169,24 @@ Pour chaque fichier de test RED :
 4. Répète jusqu'au vert complet
 
 > **Règle absolue** (mémoire `feedback_tdd_plan_wins`) : le test gagne sur le code.
-> Ne jamais proposer "retirer du scope" un test qui échoue.
+> Ne jamais proposer "retirer du scope" un test qui échoue. Les tests verrouillés au
+> RED sont protégés par hook : une tentative d'édition est refusée.
+
+**Porte `green`** — le vert du QA Checker ne suffit pas : des tests verts prouvent que
+le code écrit fonctionne, pas qu'il couvre tout ce que la spec demande. Lancer
+`spec-conformity-gate` en mode green (sources Gherkin + `CA-XXX`, fichiers de test,
+commandes de suite + build + lint, chemin de `gate.py`). Il refait la grille critère
+par critère, rejoue tout, compte les skippés. `FAIL` → renvoyer les workers concernés
+sur la liste exacte, relancer la porte. On ne passe à l'étape 6 qu'avec un `PASS`.
 
 ### Étape 6 — Résumé de fin de chantier
 
 Termine par un récap structuré : conventions respectées (lecture CLAUDE.md, DRY check),
 fichiers créés/modifiés avec liens et rôle SOLID, résultat des tests (X/Y unitaires,
-intégration, E2E — GREEN ou ⏳ si Docker/app requis), permissions ajoutées, prochaines
-étapes.
+intégration, E2E — GREEN ou ⏳ si Docker/app requis, **skippés comptés**), permissions
+ajoutées, **verdict des portes tel qu'enregistré** (`gate.py status` : PASS, ou
+escalade et sa raison), prochaines étapes. Un E2E ⏳ non rejoué par la porte n'est pas
+vert.
 
 ## Ce qu'il ne faut jamais faire
 
@@ -140,9 +198,14 @@ intégration, E2E — GREEN ou ⏳ si Docker/app requis), permissions ajoutées,
 - Utiliser `id` au lieu de `documentId` pour les opérations Strapi v5
 - Mettre des accents natifs dans du JSX/TSX (→ `&eacute;` etc., skill `french-accents`)
 - Proposer "retirer du scope" quand un test échoue
+- Déclarer la feature terminée sur la foi d'un worker ou du QA Checker — seul un
+  verdict `PASS` de `spec-conformity-gate` la clôt
+- Contourner un hook de porte (écrire dans `.claude/gates/`, modifier un test
+  verrouillé par un autre chemin)
 
 ## Évolution de ce skill
 
 - Nouveau pattern de code éprouvé → `references/patterns-activcreew.md`.
 - Nouvelle règle projet ou couche → `references/cartographie-conventions.md`.
+- Règle de porte (verdict, verrou, escalade) → `hooks/gate.py` du plugin + ses tests.
 - Ne modifier ce SKILL.md que si l'orchestration (étapes, équipe) change.
