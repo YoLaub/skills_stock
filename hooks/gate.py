@@ -190,8 +190,8 @@ def guard(event, root):
                 return deny(f"Only the `{judge}` agent may issue a `{phase}` verdict. "
                             "A worker never validates its own work.")
             return 0
-        if match:
-            return 0  # open / escalate / status are safe for anyone
+        # open / escalate / status are safe for anyone, but the rest of the
+        # command line still goes through the checks below.
         if GATES_DIR.as_posix() in cmd:
             return deny("Gate state is not edited by hand. Use `gate.py status` or `gate.py escalate`.")
         if locks and BASH_WRITE_PATTERN.search(cmd):

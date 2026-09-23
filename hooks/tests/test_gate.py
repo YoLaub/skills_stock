@@ -263,6 +263,11 @@ class GuardTests(GateTestCase):
         self.assertAllowed(self.pre_tool("Bash", {"command": f"python3 {GATE} status"}))
         self.assertAllowed(self.pre_tool("Bash", {"command": f"python3 {GATE} escalate green 'blocked'"}))
 
+    def test_safe_gate_command_cannot_smuggle_a_chained_write(self):
+        self.lock_red()
+        self.assertDenied(self.pre_tool("Bash", {"command": f"python3 {GATE} status; rm -rf .claude/gates"}))
+        self.assertDenied(self.pre_tool("Bash", {"command": f"python3 {GATE} status && sed -i '' s/2/1/ tests/don.test.js"}))
+
     # counter-example -----------------------------------------------------
     def test_ordinary_tool_calls_pass_through(self):
         self.assertAllowed(self.pre_tool("Read", {"file_path": str(self.repo / "tests/don.test.js")}))
