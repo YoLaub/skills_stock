@@ -192,6 +192,17 @@ class VerdictTests(GateTestCase):
     def test_verdict_requires_existing_report(self):
         self.assertNotEqual(self.cli("verdict", "green", "PASS", "--report", "nope.md").returncode, 0)
 
+    def test_report_can_come_from_stdin(self):
+        r = subprocess.run([sys.executable, str(GATE), "verdict", "green", "FAIL", "--report", "-"],
+                           cwd=self.repo, input="CA-002 partiel", capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("CA-002 partiel", json.loads((self.gate_dir() / "green.json").read_text())["report"])
+
+    def test_empty_report_is_refused(self):
+        r = subprocess.run([sys.executable, str(GATE), "verdict", "green", "PASS", "--report", "-"],
+                           cwd=self.repo, input="  \n", capture_output=True, text=True)
+        self.assertNotEqual(r.returncode, 0)
+
     def test_verdict_stores_report_content(self):
         self.cli("verdict", "green", "FAIL", "--report", self.report("CA-001 absent"))
         v = json.loads((self.gate_dir() / "green.json").read_text())

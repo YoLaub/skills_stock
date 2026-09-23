@@ -19,7 +19,7 @@ Hook usage (stdin = Claude Code hook JSON):
 
 CLI usage (cwd = project):
   gate.py open <phase>
-  gate.py verdict <phase> PASS|FAIL --report FILE [--scope PATH ...] [--lock FILE ...]
+  gate.py verdict <phase> PASS|FAIL --report FILE|- [--scope PATH ...] [--lock FILE ...]
   gate.py escalate <phase> "<reason>"
   gate.py status
 """
@@ -261,13 +261,18 @@ def run_hook(args):
 # -- CLI ----------------------------------------------------------------------------
 
 def cmd_verdict(args, root):
-    report = Path(args.report)
-    if not report.is_file():
-        print(f"report not found: {report}", file=sys.stderr)
+    if args.report == "-":
+        text = sys.stdin.read()
+    elif Path(args.report).is_file():
+        text = Path(args.report).read_text()
+    else:
+        print(f"report not found: {args.report}", file=sys.stderr)
+        return 1
+    if not text.strip():
+        print("empty report: a verdict must list its per-criterion findings", file=sys.stderr)
         return 1
     data = {"phase": args.phase, "verdict": args.verdict, "at": now(),
-            "scope": args.scope or None,
-            "report": report.read_text()}
+            "scope": args.scope or None, "report": text}
 
     if args.phase == "red" and args.verdict == "PASS":
         if not args.lock:
